@@ -14,7 +14,328 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ai_content: {
+        Row: {
+          content_type: string | null
+          created_at: string | null
+          generated_content: string | null
+          id: string
+          metadata: Json | null
+          prompt: string
+          usage_stats: Json | null
+          user_id: string
+        }
+        Insert: {
+          content_type?: string | null
+          created_at?: string | null
+          generated_content?: string | null
+          id?: string
+          metadata?: Json | null
+          prompt: string
+          usage_stats?: Json | null
+          user_id: string
+        }
+        Update: {
+          content_type?: string | null
+          created_at?: string | null
+          generated_content?: string | null
+          id?: string
+          metadata?: Json | null
+          prompt?: string
+          usage_stats?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_content_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      analytics_events: {
+        Row: {
+          created_at: string | null
+          event_data: Json | null
+          event_type: string
+          id: string
+          source: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          source?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          source?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      digital_publications: {
+        Row: {
+          author_name: string
+          content_url: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          description: string | null
+          distribution_channels: Json | null
+          id: string
+          isbn: string | null
+          metadata: Json | null
+          publication_type: string | null
+          sales_data: Json | null
+          status: Database["public"]["Enums"]["project_status"] | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          author_name: string
+          content_url?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          distribution_channels?: Json | null
+          id?: string
+          isbn?: string | null
+          metadata?: Json | null
+          publication_type?: string | null
+          sales_data?: Json | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          author_name?: string
+          content_url?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          distribution_channels?: Json | null
+          id?: string
+          isbn?: string | null
+          metadata?: Json | null
+          publication_type?: string | null
+          sales_data?: Json | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "digital_publications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      marketing_campaigns: {
+        Row: {
+          ai_suggestions: Json | null
+          budget: number | null
+          campaign_type: string | null
+          channels: Json | null
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          goals: Json | null
+          id: string
+          metrics: Json | null
+          name: string
+          spent: number | null
+          start_date: string | null
+          status: Database["public"]["Enums"]["campaign_status"] | null
+          target_audience: Json | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_suggestions?: Json | null
+          budget?: number | null
+          campaign_type?: string | null
+          channels?: Json | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          goals?: Json | null
+          id?: string
+          metrics?: Json | null
+          name: string
+          spent?: number | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["campaign_status"] | null
+          target_audience?: Json | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_suggestions?: Json | null
+          budget?: number | null
+          campaign_type?: string | null
+          channels?: Json | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          goals?: Json | null
+          id?: string
+          metrics?: Json | null
+          name?: string
+          spent?: number | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["campaign_status"] | null
+          target_audience?: Json | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketing_campaigns_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      music_releases: {
+        Row: {
+          album_type: string | null
+          artist_name: string
+          cover_image_url: string | null
+          created_at: string | null
+          description: string | null
+          distribution_platforms: Json | null
+          genre: string[] | null
+          id: string
+          isrc_codes: Json | null
+          metadata: Json | null
+          release_date: string | null
+          revenue_data: Json | null
+          status: Database["public"]["Enums"]["project_status"] | null
+          streaming_stats: Json | null
+          title: string
+          upc_code: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          album_type?: string | null
+          artist_name: string
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          distribution_platforms?: Json | null
+          genre?: string[] | null
+          id?: string
+          isrc_codes?: Json | null
+          metadata?: Json | null
+          release_date?: string | null
+          revenue_data?: Json | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          streaming_stats?: Json | null
+          title: string
+          upc_code?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          album_type?: string | null
+          artist_name?: string
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          distribution_platforms?: Json | null
+          genre?: string[] | null
+          id?: string
+          isrc_codes?: Json | null
+          metadata?: Json | null
+          release_date?: string | null
+          revenue_data?: Json | null
+          status?: Database["public"]["Enums"]["project_status"] | null
+          streaming_stats?: Json | null
+          title?: string
+          upc_code?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "music_releases_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          artist_name: string | null
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          full_name: string | null
+          id: string
+          label_name: string | null
+          role: Database["public"]["Enums"]["user_role"] | null
+          social_links: Json | null
+          updated_at: string | null
+          username: string | null
+          website: string | null
+        }
+        Insert: {
+          artist_name?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id: string
+          label_name?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          social_links?: Json | null
+          updated_at?: string | null
+          username?: string | null
+          website?: string | null
+        }
+        Update: {
+          artist_name?: string | null
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          label_name?: string | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          social_links?: Json | null
+          updated_at?: string | null
+          username?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +344,9 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      campaign_status: "draft" | "active" | "paused" | "completed" | "archived"
+      project_status: "draft" | "pending" | "published" | "archived"
+      user_role: "artist" | "label" | "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +473,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      campaign_status: ["draft", "active", "paused", "completed", "archived"],
+      project_status: ["draft", "pending", "published", "archived"],
+      user_role: ["artist", "label", "admin", "user"],
+    },
   },
 } as const

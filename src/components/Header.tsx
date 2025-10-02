@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Music2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navItems = [
   { label: "Funkcje", href: "#features" },
@@ -12,6 +14,8 @@ const navItems = [
 ];
 
 export function Header() {
+  const navigate = useNavigate();
+  const { session } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -68,8 +72,29 @@ export function Header() {
             animate={{ opacity: 1, x: 0 }}
             className="hidden lg:flex items-center gap-4"
           >
-            <Button variant="ghost">Zaloguj</Button>
-            <Button variant="gradient">Rozpocznij</Button>
+            {session ? (
+              <Button 
+                variant="gradient"
+                onClick={() => navigate("/dashboard")}
+              >
+                Panel
+              </Button>
+            ) : (
+              <>
+                <Button 
+                  variant="ghost"
+                  onClick={() => navigate("/auth")}
+                >
+                  Zaloguj
+                </Button>
+                <Button 
+                  variant="gradient"
+                  onClick={() => navigate("/auth")}
+                >
+                  Rozpocznij
+                </Button>
+              </>
+            )}
           </motion.div>
 
           {/* Mobile Menu Button */}
@@ -104,8 +129,32 @@ export function Header() {
                   </a>
                 ))}
                 <div className="flex flex-col gap-2 pt-4 border-t border-white/10">
-                  <Button variant="outline" className="w-full">Zaloguj</Button>
-                  <Button variant="gradient" className="w-full">Rozpocznij</Button>
+                  {session ? (
+                    <Button 
+                      variant="gradient" 
+                      className="w-full"
+                      onClick={() => navigate("/dashboard")}
+                    >
+                      Panel
+                    </Button>
+                  ) : (
+                    <>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => navigate("/auth")}
+                      >
+                        Zaloguj
+                      </Button>
+                      <Button 
+                        variant="gradient" 
+                        className="w-full"
+                        onClick={() => navigate("/auth")}
+                      >
+                        Rozpocznij
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </nav>

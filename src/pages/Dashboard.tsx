@@ -16,7 +16,10 @@ import {
   X,
   Plus,
   DollarSign,
-  PlayCircle
+  PlayCircle,
+  Lightbulb,
+  Wand2,
+  Mail
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -88,20 +91,36 @@ export default function Dashboard() {
 
   const modules = [
     {
+      title: "Generator Strategii",
+      icon: Lightbulb,
+      color: "primary",
+      link: "/dashboard/strategy-generator",
+      stats: "Strategia AI",
+      description: "Twórz strategie marketingowe"
+    },
+    {
+      title: "Generator Treści",
+      icon: Wand2,
+      color: "secondary",
+      link: "/dashboard/content-generator",
+      stats: "Treści AI",
+      description: "Generuj teksty i grafiki"
+    },
+    {
+      title: "Kontakty PR",
+      icon: Mail,
+      color: "accent",
+      link: "/dashboard/contacts",
+      stats: "Baza kontaktów",
+      description: "PR i influencerzy"
+    },
+    {
       title: "Dystrybucja Muzyki",
       icon: Music,
       color: "primary",
       link: "/dashboard/music",
       stats: `${stats.releases} wydań`,
       description: "Zarządzaj i publikuj swoją muzykę"
-    },
-    {
-      title: "Publikacje Cyfrowe",
-      icon: BookOpen,
-      color: "secondary",
-      link: "/dashboard/publications",
-      stats: `${stats.publications} publikacji`,
-      description: "E-booki i audiobooki"
     },
     {
       title: "Marketing AI",
@@ -118,23 +137,7 @@ export default function Dashboard() {
       link: "/dashboard/ai-studio",
       stats: "Generuj treści",
       description: "Twórz z pomocą AI"
-    },
-    {
-      title: "Analityka",
-      icon: BarChart3,
-      color: "secondary",
-      link: "/dashboard/analytics",
-      stats: "Statystyki",
-      description: "Monitoruj wyniki"
-    },
-    {
-      title: "Społeczność",
-      icon: Users,
-      color: "accent",
-      link: "/dashboard/community",
-      stats: "Fani",
-      description: "Zarządzaj fanami"
-    },
+    }
   ];
 
   return (
@@ -345,17 +348,17 @@ export default function Dashboard() {
           >
             <h3 className="text-xl font-semibold mb-4">Szybkie Akcje</h3>
             <div className="flex flex-wrap gap-4">
-              <Button variant="gradient" className="group">
-                <Plus className="mr-2 h-4 w-4" />
-                Nowe Wydanie
+              <Button variant="gradient" className="group" onClick={() => navigate("/dashboard/strategy-generator")}>
+                <Lightbulb className="mr-2 h-4 w-4" />
+                Nowa Strategia
               </Button>
-              <Button variant="glow">
-                <Sparkles className="mr-2 h-4 w-4" />
-                Generuj z AI
+              <Button variant="glow" onClick={() => navigate("/dashboard/content-generator")}>
+                <Wand2 className="mr-2 h-4 w-4" />
+                Generuj Treść
               </Button>
-              <Button variant="outline">
-                <PlayCircle className="mr-2 h-4 w-4" />
-                Rozpocznij Kampanię
+              <Button variant="outline" onClick={() => navigate("/dashboard/contacts")}>
+                <Mail className="mr-2 h-4 w-4" />
+                Dodaj Kontakt
               </Button>
             </div>
           </motion.div>

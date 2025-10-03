@@ -11,6 +11,9 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import MusicDashboard from "./pages/MusicDashboard";
 import AIStudio from "./pages/AIStudio";
+import StrategyGenerator from "./pages/StrategyGenerator";
+import ContentGenerator from "./pages/ContentGenerator";
+import ContactsManager from "./pages/ContactsManager";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +40,21 @@ const App = () => (
             <Route path="/dashboard/ai-studio" element={
               <ProtectedRoute>
                 <AIStudio />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/strategy-generator" element={
+              <ProtectedRoute>
+                <StrategyGenerator />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/content-generator" element={
+              <ProtectedRoute>
+                <ContentGenerator />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/contacts" element={
+              <ProtectedRoute>
+                <ContactsManager />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

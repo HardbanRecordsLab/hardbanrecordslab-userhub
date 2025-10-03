@@ -90,6 +90,158 @@ export type Database = {
           },
         ]
       }
+      contacts: {
+        Row: {
+          audience_size: number | null
+          categories: string[] | null
+          company: string | null
+          contact_type: string | null
+          created_at: string | null
+          email: string | null
+          engagement_rate: number | null
+          id: string
+          interaction_history: Json | null
+          last_contact_date: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          position: string | null
+          rating: number | null
+          social_media: Json | null
+          status: string | null
+          tags: string[] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          audience_size?: number | null
+          categories?: string[] | null
+          company?: string | null
+          contact_type?: string | null
+          created_at?: string | null
+          email?: string | null
+          engagement_rate?: number | null
+          id?: string
+          interaction_history?: Json | null
+          last_contact_date?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          position?: string | null
+          rating?: number | null
+          social_media?: Json | null
+          status?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          audience_size?: number | null
+          categories?: string[] | null
+          company?: string | null
+          contact_type?: string | null
+          created_at?: string | null
+          email?: string | null
+          engagement_rate?: number | null
+          id?: string
+          interaction_history?: Json | null
+          last_contact_date?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          position?: string | null
+          rating?: number | null
+          social_media?: Json | null
+          status?: string | null
+          tags?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_library: {
+        Row: {
+          ai_generated: boolean | null
+          campaign_id: string | null
+          channel: string | null
+          content_text: string | null
+          content_type: string | null
+          created_at: string | null
+          id: string
+          media_url: string | null
+          metadata: Json | null
+          performance_metrics: Json | null
+          prompt: string | null
+          published_at: string | null
+          scheduled_at: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_generated?: boolean | null
+          campaign_id?: string | null
+          channel?: string | null
+          content_text?: string | null
+          content_type?: string | null
+          created_at?: string | null
+          id?: string
+          media_url?: string | null
+          metadata?: Json | null
+          performance_metrics?: Json | null
+          prompt?: string | null
+          published_at?: string | null
+          scheduled_at?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_generated?: boolean | null
+          campaign_id?: string | null
+          channel?: string | null
+          content_text?: string | null
+          content_type?: string | null
+          created_at?: string | null
+          id?: string
+          media_url?: string | null
+          metadata?: Json | null
+          performance_metrics?: Json | null
+          prompt?: string | null
+          published_at?: string | null
+          scheduled_at?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_library_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_library_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       digital_publications: {
         Row: {
           author_name: string
@@ -335,6 +487,141 @@ export type Database = {
           website?: string | null
         }
         Relationships: []
+      }
+      publication_calendar: {
+        Row: {
+          auto_publish: boolean | null
+          campaign_id: string | null
+          channel: string
+          content_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          metadata: Json | null
+          notification_sent: boolean | null
+          scheduled_date: string
+          status: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          auto_publish?: boolean | null
+          campaign_id?: string | null
+          channel: string
+          content_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          notification_sent?: boolean | null
+          scheduled_date: string
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          auto_publish?: boolean | null
+          campaign_id?: string | null
+          channel?: string
+          content_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          notification_sent?: boolean | null
+          scheduled_date?: string
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "publication_calendar_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "marketing_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "publication_calendar_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "content_library"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "publication_calendar_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      strategies: {
+        Row: {
+          budget_allocation: Json | null
+          competitor_analysis: Json | null
+          created_at: string | null
+          description: string | null
+          generated_content: string | null
+          goals: Json | null
+          id: string
+          kpis: Json | null
+          name: string
+          status: Database["public"]["Enums"]["project_status"] | null
+          swot_analysis: Json | null
+          target_audience: Json | null
+          timeline: Json | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          budget_allocation?: Json | null
+          competitor_analysis?: Json | null
+          created_at?: string | null
+          description?: string | null
+          generated_content?: string | null
+          goals?: Json | null
+          id?: string
+          kpis?: Json | null
+          name: string
+          status?: Database["public"]["Enums"]["project_status"] | null
+          swot_analysis?: Json | null
+          target_audience?: Json | null
+          timeline?: Json | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          budget_allocation?: Json | null
+          competitor_analysis?: Json | null
+          created_at?: string | null
+          description?: string | null
+          generated_content?: string | null
+          goals?: Json | null
+          id?: string
+          kpis?: Json | null
+          name?: string
+          status?: Database["public"]["Enums"]["project_status"] | null
+          swot_analysis?: Json | null
+          target_audience?: Json | null
+          timeline?: Json | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "strategies_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

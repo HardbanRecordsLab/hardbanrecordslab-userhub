@@ -17,7 +17,10 @@ import {
   Globe,
   DollarSign,
   Loader2,
-  ArrowLeft
+  ArrowLeft,
+  Download,
+  ExternalLink,
+  CheckSquare
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -36,6 +39,9 @@ export default function MusicDashboard() {
     description: "",
     genre: "",
   });
+  const [selectedRelease, setSelectedRelease] = useState<any>(null);
+  const [showChecklist, setShowChecklist] = useState(false);
+  const [zapierWebhook, setZapierWebhook] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -94,6 +100,83 @@ export default function MusicDashboard() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const exportToRouteNote = (release: any) => {
+    // Przygotowanie danych w formacie CSV dla RouteNote
+    const metadata = {
+      "Release Title": release.title,
+      "Artist Name": release.artist_name,
+      "Release Type": release.album_type,
+      "Release Date": release.release_date || "",
+      "Primary Genre": release.genre?.[0] || "",
+      "Secondary Genre": release.genre?.[1] || "",
+      "Description": release.description || "",
+      "UPC": release.upc_code || "TO BE ASSIGNED",
+      "Label": "Independent",
+      "Copyright Year": new Date().getFullYear(),
+      "Copyright Holder": release.artist_name,
+    };
+
+    // Konwersja do CSV
+    const headers = Object.keys(metadata).join(",");
+    const values = Object.values(metadata).map(v => `"${v}"`).join(",");
+    const csv = `${headers}\n${values}`;
+
+    // Download CSV
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `routenote_${release.title.replace(/[^a-z0-9]/gi, '_')}.csv`;
+    a.click();
+
+    toast({
+      title: "Metadata wyeksportowana!",
+      description: "Plik CSV gotowy do importu w RouteNote",
+    });
+  };
+
+  const prepareRouteNotePackage = (release: any) => {
+    setSelectedRelease(release);
+    setShowChecklist(true);
+  };
+
+  const sendZapierWebhook = async (release: any) => {
+    if (!zapierWebhook) {
+      toast({
+        title: "Brak webhooka",
+        description: "Wprowadź URL webhooka Zapier",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await fetch(zapierWebhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        mode: "no-cors",
+        body: JSON.stringify({
+          release_title: release.title,
+          artist_name: release.artist_name,
+          release_date: release.release_date,
+          status: release.status,
+          timestamp: new Date().toISOString(),
+        }),
+      });
+
+      toast({
+        title: "Powiadomienie wysłane",
+        description: "Sprawdź historię Zap w Zapier",
+      });
+    } catch (error) {
+      toast({
+        title: "Błąd",
+        description: "Nie udało się wysłać webhooka",
+        variant: "destructive",
+      });
     }
   };
 
@@ -290,13 +373,36 @@ export default function MusicDashboard() {
                       </div>
                     )}
                   </div>
-                  <div className="mt-4 flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">
-                      Edytuj
+                  <div className="mt-4 space-y-2">
+                    <Button 
+                      variant="gradient" 
+                      size="sm" 
+                      className="w-full"
+                      onClick={() => prepareRouteNotePackage(release)}
+                    >
+                      <CheckSquare className="mr-2 h-4 w-4" />
+                      Przygotuj do RouteNote
                     </Button>
-                    <Button variant="gradient" size="sm" className="flex-1">
-                      Publikuj
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => exportToRouteNote(release)}
+                      >
+                        <Download className="mr-2 h-3 w-3" />
+                        Eksport CSV
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => window.open("https://www.routenote.com/", "_blank")}
+                      >
+                        <ExternalLink className="mr-2 h-3 w-3" />
+                        RouteNote
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -321,6 +427,128 @@ export default function MusicDashboard() {
             </motion.div>
           )}
         </div>
+
+        {/* RouteNote Checklist Modal */}
+        {showChecklist && selectedRelease && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-card border border-border rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            >
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-2xl font-bold">Checklist dystrybucji RouteNote</h2>
+                  <Button variant="ghost" size="sm" onClick={() => setShowChecklist(false)}>
+                    ✕
+                  </Button>
+                </div>
+
+                <div className="space-y-4 mb-6">
+                  <div className="p-4 bg-primary/10 rounded-lg">
+                    <h3 className="font-semibold mb-2">{selectedRelease.title}</h3>
+                    <p className="text-sm text-muted-foreground">{selectedRelease.artist_name}</p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="font-semibold">Wymagane materiały:</h4>
+                    <div className="space-y-2 text-sm">
+                      <label className="flex items-center gap-2">
+                        <input type="checkbox" className="rounded" />
+                        <span>Pliki audio (WAV, 16-bit/44.1kHz minimum)</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input type="checkbox" className="rounded" />
+                        <span>Okładka albumu (3000x3000px, JPG/PNG)</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input type="checkbox" className="rounded" />
+                        <span>Metadata (tytuły utworów, artyści, autorzy)</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input type="checkbox" className="rounded" />
+                        <span>Kody ISRC (jeśli posiadasz)</span>
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input type="checkbox" className="rounded" />
+                        <span>Kod UPC/EAN (jeśli posiadasz)</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="font-semibold">Kroki dystrybucji:</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-start gap-2">
+                        <span className="font-semibold text-primary">1.</span>
+                        <span>Zaloguj się do <a href="https://www.routenote.com/" target="_blank" className="text-primary hover:underline">RouteNote</a></span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="font-semibold text-primary">2.</span>
+                        <span>Kliknij "Release Music" → "Upload Release"</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="font-semibold text-primary">3.</span>
+                        <span>Wypełnij formularz danymi lub zaimportuj plik CSV</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="font-semibold text-primary">4.</span>
+                        <span>Wgraj pliki audio i okładkę</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="font-semibold text-primary">5.</span>
+                        <span>Wybierz platformy dystrybucji (Spotify, Apple Music, itd.)</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="font-semibold text-primary">6.</span>
+                        <span>Sprawdź i zatwierdź wydanie</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="font-semibold">Automatyzacja z Zapier (opcjonalnie):</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Możesz skonfigurować Zap, który wyśle Ci powiadomienie email lub do Slack gdy wydanie będzie gotowe do uploadowania.
+                    </p>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Wklej URL webhooka Zapier"
+                        value={zapierWebhook}
+                        onChange={(e) => setZapierWebhook(e.target.value)}
+                      />
+                      <Button 
+                        variant="outline"
+                        onClick={() => sendZapierWebhook(selectedRelease)}
+                      >
+                        Wyślij
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <Button 
+                    variant="gradient" 
+                    className="flex-1"
+                    onClick={() => exportToRouteNote(selectedRelease)}
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Pobierz CSV
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    className="flex-1"
+                    onClick={() => window.open("https://www.routenote.com/", "_blank")}
+                  >
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Otwórz RouteNote
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -14,6 +14,10 @@ import AIStudio from "./pages/AIStudio";
 import StrategyGenerator from "./pages/StrategyGenerator";
 import ContentGenerator from "./pages/ContentGenerator";
 import ContactsManager from "./pages/ContactsManager";
+import PublicationCalendar from "./pages/PublicationCalendar";
+import AnalyticsDashboard from "./pages/AnalyticsDashboard";
+import RevenueTracker from "./pages/RevenueTracker";
+import BrandAssets from "./pages/BrandAssets";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +59,26 @@ const App = () => (
             <Route path="/dashboard/contacts" element={
               <ProtectedRoute>
                 <ContactsManager />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/calendar" element={
+              <ProtectedRoute>
+                <PublicationCalendar />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/analytics" element={
+              <ProtectedRoute>
+                <AnalyticsDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/revenue" element={
+              <ProtectedRoute>
+                <RevenueTracker />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/brand-assets" element={
+              <ProtectedRoute>
+                <BrandAssets />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

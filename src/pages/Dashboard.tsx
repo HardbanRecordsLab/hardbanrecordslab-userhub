@@ -19,7 +19,9 @@ import {
   PlayCircle,
   Lightbulb,
   Wand2,
-  Mail
+  Mail,
+  Calendar,
+  Image
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -121,6 +123,38 @@ export default function Dashboard() {
       link: "/dashboard/music",
       stats: `${stats.releases} wydań`,
       description: "Zarządzaj i publikuj swoją muzykę"
+    },
+    {
+      title: "Kalendarz Publikacji",
+      icon: Calendar,
+      color: "secondary",
+      link: "/dashboard/calendar",
+      stats: "Planowanie",
+      description: "Zaplanuj publikacje na wszystkich kanałach"
+    },
+    {
+      title: "Dashboard Analityczny",
+      icon: TrendingUp,
+      color: "primary",
+      link: "/dashboard/analytics",
+      stats: "Analytics",
+      description: "KPI i raporty"
+    },
+    {
+      title: "Śledzenie Przychodów",
+      icon: DollarSign,
+      color: "accent",
+      link: "/dashboard/revenue",
+      stats: "Finanse",
+      description: "Przychody i prognozowanie"
+    },
+    {
+      title: "Assety Brandowe",
+      icon: Image,
+      color: "secondary",
+      link: "/dashboard/brand-assets",
+      stats: "Media",
+      description: "Logo, grafiki, materiały"
     },
     {
       title: "Marketing AI",

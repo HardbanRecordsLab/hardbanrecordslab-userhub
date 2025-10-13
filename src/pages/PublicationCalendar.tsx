@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -102,6 +103,7 @@ export default function PublicationCalendar() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Kalendarz Publikacji" description="Planuj i zarządzaj publikacjami na wszystkich kanałach" />
       <div className="container mx-auto p-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

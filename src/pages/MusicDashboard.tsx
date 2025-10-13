@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -183,7 +182,6 @@ export default function MusicDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO title="Dystrybucja Muzyki" description="Zarządzaj wydaniami muzycznymi i dystrybucją przez RouteNote" />
       <div className="container mx-auto p-6">
         {/* Header */}
         <motion.div

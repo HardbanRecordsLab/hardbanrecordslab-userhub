@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, TrendingUp, Eye, Users, DollarSign } from "lucide-react";
@@ -102,7 +101,6 @@ export default function AnalyticsDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO title="Dashboard Analityczny" description="Analizuj wydajność i monitoruj kluczowe wskaźniki (KPI)" />
       <div className="container mx-auto p-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

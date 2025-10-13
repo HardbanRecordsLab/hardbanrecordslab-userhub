@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -177,7 +176,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO title="Dashboard" description="Panel zarządzania twoją muzyczną karierą" />
       {/* Sidebar */}
       <aside className={`fixed left-0 top-0 z-40 h-screen w-64 transition-transform ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"

@@ -19,12 +19,12 @@ const Index = () => {
         <section id="modules">
           <Modules />
         </section>
+        <section id="contact">
+          <CTA />
+        </section>
         <Stats />
         <section id="pricing">
           <Pricing />
-        </section>
-        <section id="contact">
-          <CTA />
         </section>
       </main>
       <Footer />

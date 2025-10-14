@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import heroBackground from "@/assets/hero-background.jpg";
+import { DemoModal } from "./DemoModal";
 
 export function Hero() {
   const navigate = useNavigate();
+  const [demoOpen, setDemoOpen] = useState(false);
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background image */}
@@ -83,10 +86,7 @@ export function Hero() {
               variant="outline" 
               size="lg" 
               className="group"
-              onClick={() => {
-                const modulesSection = document.getElementById("modules");
-                modulesSection?.scrollIntoView({ behavior: "smooth" });
-              }}
+              onClick={() => setDemoOpen(true)}
             >
               <Play className="mr-2 h-4 w-4" />
               Zobacz Demo
@@ -119,6 +119,8 @@ export function Hero() {
       <div className="absolute top-20 left-10 w-20 h-20 bg-primary/20 rounded-full blur-xl animate-float" />
       <div className="absolute bottom-20 right-10 w-32 h-32 bg-secondary/20 rounded-full blur-xl animate-float" style={{ animationDelay: "2s" }} />
       <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-accent/20 rounded-full blur-xl animate-float" style={{ animationDelay: "4s" }} />
+
+      <DemoModal open={demoOpen} onOpenChange={setDemoOpen} />
     </section>
   );
 }

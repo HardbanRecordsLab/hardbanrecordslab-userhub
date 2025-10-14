@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SpecialistChatBot } from "./SpecialistChatBot";
 
 export function CTA() {
   const navigate = useNavigate();
+  const [chatOpen, setChatOpen] = useState(false);
   return (
     <section className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-primary opacity-10" />
@@ -44,7 +47,7 @@ export function CTA() {
             <Button 
               variant="glass" 
               size="lg"
-              onClick={() => window.location.href = "mailto:kontakt@hardbanrecords.com"}
+              onClick={() => setChatOpen(true)}
             >
               Porozmawiaj ze Specjalistą
             </Button>
@@ -55,6 +58,8 @@ export function CTA() {
           </p>
         </motion.div>
       </div>
+
+      <SpecialistChatBot open={chatOpen} onOpenChange={setChatOpen} />
     </section>
   );
 }

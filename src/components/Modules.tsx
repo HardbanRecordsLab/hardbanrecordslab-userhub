@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Headphones, BookText, Megaphone, Brain } from "lucide-react";
+import { ModuleHoverCard } from "./ModuleHoverCard";
 
 const modules = [
   {
@@ -15,6 +16,23 @@ const modules = [
       "Split sheets",
     ],
     color: "primary",
+    detailedInfo: {
+      overview: "Kompleksowe rozwiązanie do dystrybucji muzyki, które automatyzuje cały proces - od uploadu po wypłatę tantiem. Docieraj do słuchaczy na całym świecie przez jedną platformę.",
+      features: [
+        "Dystrybucja na Spotify, Apple Music, YouTube Music, Tidal, Deezer i 195+ innych platform",
+        "Automatyczne generowanie i przypisywanie kodów ISRC i UPC",
+        "Zaawansowany system split sheets dla zespołów i współpracowników",
+        "Real-time tracking statystyk i streaming royalties",
+        "Automatyczne wypłaty tantiem dla wszystkich współtwórców",
+        "Content ID na YouTube - monetyzacja Twoich utworów"
+      ],
+      benefits: [
+        "Zaoszczędź tysiące złotych na dystrybucji",
+        "Zachowaj 100% praw autorskich",
+        "Wypłaty już od pierwszego streamu",
+        "Wsparcie techniczne w języku polskim"
+      ]
+    }
   },
   {
     icon: BookText,
@@ -28,6 +46,23 @@ const modules = [
       "Zarządzanie ISBN",
     ],
     color: "secondary",
+    detailedInfo: {
+      overview: "Publikuj swoje książki w globalnych księgarniach cyfrowych i drukowanych. Generator audiobooków AI pozwala na szybką konwersję tekstów na audiobooki w wielu językach.",
+      features: [
+        "Dystrybucja do Amazon Kindle, Apple Books, Google Play Books, Empik, Legimi",
+        "Generator audiobooków AI z naturalnymi głosami w 40+ językach",
+        "Print-on-demand w ponad 30 krajach bez konieczności inwestycji w nakład",
+        "Automatyczne zarządzanie numerami ISBN i kodami kreskowymi",
+        "Profesjonalne konwersje formatów (EPUB, MOBI, PDF)",
+        "System pre-orderów i kontrolowanych premier"
+      ],
+      benefits: [
+        "Publikuj bez wydawcy - zachowaj pełną kontrolę",
+        "Generuj audiobooki w godzinę, nie w miesiące",
+        "Zero ryzyka - druk na żądanie eliminuje koszty magazynowania",
+        "Globalna dystrybucja z jednego panelu"
+      ]
+    }
   },
   {
     icon: Megaphone,
@@ -41,6 +76,23 @@ const modules = [
       "Social media scheduling",
     ],
     color: "accent",
+    detailedInfo: {
+      overview: "Kompletny zestaw narzędzi marketingowych napędzanych AI. Od strategii po wykonanie - wszystko w jednym miejscu.",
+      features: [
+        "AI Marketing Strategy Generator - automatyczne plany marketingowe dla każdego wydania",
+        "Smart Links i Landing Pages - jeden link do wszystkich platform streamingowych i sklepów",
+        "Automatyzacja social media - planowanie postów na wszystkie kanały",
+        "Narzędzia PR - automatyczne generowanie press releasów i pitch emaili",
+        "Email marketing z segmentacją AI",
+        "Analityka cross-platform - wszystkie dane w jednym miejscu"
+      ],
+      benefits: [
+        "Oszczędź setki godzin na planowaniu kampanii",
+        "Profesjonalne materiały bez agencji marketingowej",
+        "Zwiększ zasięgi dzięki AI-powered insights",
+        "ROI tracking - zobacz co działa, a co nie"
+      ]
+    }
   },
   {
     icon: Brain,
@@ -54,6 +106,23 @@ const modules = [
       "Mastering audio",
     ],
     color: "primary",
+    detailedInfo: {
+      overview: "Twoje prywatne studio kreatywne napędzane najnowszymi modelami AI. Od pomysłu do gotowego produktu w minuty.",
+      features: [
+        "AI Content Generator - opisy wydań, biografie artystów, posty social media",
+        "DALL-E 3 integration - generowanie okładek, plakatów i grafik promocyjnych",
+        "AI Music Generator - tworzenie beatów, sampli i ścieżek tła",
+        "Profesjonalny AI Mastering - jakość studyjna w kilka sekund",
+        "Text-to-Speech dla audiobooków w 40+ językach",
+        "Automatyczne transkrypcje i tłumaczenia"
+      ],
+      benefits: [
+        "Oszczędź tysiące na grafice i produkcji audio",
+        "Twórz profesjonalne materiały bez umiejętności technicznych",
+        "Eksperymentuj bez kosztów i ryzyka",
+        "Dostęp 24/7 - twórz kiedy masz inspirację"
+      ]
+    }
   },
 ];
 
@@ -102,14 +171,22 @@ export function Modules() {
                         </div>
                       ))}
                     </div>
-                    <Button 
-                      variant="glow" 
-                      className="group/btn"
-                      onClick={() => window.location.href = "#contact"}
+                    <ModuleHoverCard
+                      icon={module.icon}
+                      title={module.title}
+                      subtitle={module.subtitle}
+                      description={module.description}
+                      detailedInfo={module.detailedInfo}
                     >
-                      Dowiedz się więcej
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                    </Button>
+                      <Button 
+                        variant="glow" 
+                        className="group/btn"
+                        onClick={() => window.location.href = "#contact"}
+                      >
+                        Dowiedz się więcej
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                      </Button>
+                    </ModuleHoverCard>
                   </div>
                 </div>
               </div>

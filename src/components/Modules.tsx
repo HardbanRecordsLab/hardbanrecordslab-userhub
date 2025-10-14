@@ -102,7 +102,11 @@ export function Modules() {
                         </div>
                       ))}
                     </div>
-                    <Button variant="glow" className="group/btn">
+                    <Button 
+                      variant="glow" 
+                      className="group/btn"
+                      onClick={() => window.location.href = "#contact"}
+                    >
                       Dowiedz się więcej
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
                     </Button>

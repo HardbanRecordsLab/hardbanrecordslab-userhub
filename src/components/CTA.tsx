@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function CTA() {
+  const navigate = useNavigate();
   return (
     <section className="py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-primary opacity-10" />
@@ -30,11 +32,20 @@ export function CTA() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="gradient" size="lg" className="group">
+            <Button 
+              variant="gradient" 
+              size="lg" 
+              className="group"
+              onClick={() => navigate("/auth")}
+            >
               Zacznij 30-dniowy Trial
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
-            <Button variant="glass" size="lg">
+            <Button 
+              variant="glass" 
+              size="lg"
+              onClick={() => window.location.href = "mailto:kontakt@hardbanrecords.com"}
+            >
               Porozmawiaj ze Specjalistą
             </Button>
           </div>

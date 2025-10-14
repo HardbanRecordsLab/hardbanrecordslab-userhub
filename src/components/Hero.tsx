@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import heroBackground from "@/assets/hero-background.jpg";
 
 export function Hero() {
+  const navigate = useNavigate();
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background image */}
@@ -68,11 +70,24 @@ export function Hero() {
             transition={{ delay: 0.5 }}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <Button variant="gradient" size="lg" className="group">
+            <Button 
+              variant="gradient" 
+              size="lg" 
+              className="group"
+              onClick={() => navigate("/auth")}
+            >
               Rozpocznij Za Darmo
               <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
-            <Button variant="outline" size="lg" className="group">
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="group"
+              onClick={() => {
+                const modulesSection = document.getElementById("modules");
+                modulesSection?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
               <Play className="mr-2 h-4 w-4" />
               Zobacz Demo
             </Button>

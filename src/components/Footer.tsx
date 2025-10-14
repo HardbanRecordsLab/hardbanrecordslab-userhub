@@ -1,10 +1,34 @@
 import { Music2, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
 
 const footerLinks = {
-  Produkt: ["Funkcje", "Moduły", "Cennik", "API", "Integracje"],
-  Firma: ["O Nas", "Kariera", "Blog", "Prasa", "Partnerzy"],
-  Wsparcie: ["Centrum Pomocy", "Dokumentacja", "Status", "Kontakt", "FAQ"],
-  Prawne: ["Prywatność", "Warunki", "RODO", "Licencje", "Cookies"],
+  Produkt: [
+    { label: "Funkcje", href: "#features" },
+    { label: "Moduły", href: "#modules" },
+    { label: "Cennik", href: "#pricing" },
+    { label: "API", href: "#contact" },
+    { label: "Integracje", href: "#contact" },
+  ],
+  Firma: [
+    { label: "O Nas", href: "#contact" },
+    { label: "Kariera", href: "#contact" },
+    { label: "Blog", href: "#contact" },
+    { label: "Prasa", href: "#contact" },
+    { label: "Partnerzy", href: "#contact" },
+  ],
+  Wsparcie: [
+    { label: "Centrum Pomocy", href: "#contact" },
+    { label: "Dokumentacja", href: "#contact" },
+    { label: "Status", href: "#contact" },
+    { label: "Skontaktuj się z nami", href: "mailto:kontakt@hardbanrecords.com" },
+    { label: "FAQ", href: "#contact" },
+  ],
+  Prawne: [
+    { label: "Prywatność", href: "#contact" },
+    { label: "Warunki", href: "#contact" },
+    { label: "RODO", href: "#contact" },
+    { label: "Licencje", href: "#contact" },
+    { label: "Cookies", href: "#contact" },
+  ],
 };
 
 const socialLinks = [
@@ -52,12 +76,12 @@ export function Footer() {
               <h3 className="font-semibold mb-4">{category}</h3>
               <ul className="space-y-2">
                 {links.map((link) => (
-                  <li key={link}>
+                  <li key={link.label}>
                     <a
-                      href="#"
+                      href={link.href}
                       className="text-sm text-muted-foreground hover:text-primary transition-colors"
                     >
-                      {link}
+                      {link.label}
                     </a>
                   </li>
                 ))}
@@ -72,13 +96,13 @@ export function Footer() {
               © 2025 HardbanRecords Lab. Wszystkie prawa zastrzeżone.
             </p>
             <div className="flex gap-6">
-              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <a href="#contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Polityka Prywatności
               </a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <a href="#contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Warunki Użytkowania
               </a>
-              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <a href="#contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Ustawienia Cookies
               </a>
             </div>

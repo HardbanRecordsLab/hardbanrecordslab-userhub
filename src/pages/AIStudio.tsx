@@ -19,6 +19,15 @@ import {
   Copy
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { z } from "zod";
+
+const promptSchema = z.object({
+  prompt: z.string()
+    .min(1, "Prompt nie może być pusty")
+    .max(10000, "Prompt jest zbyt długi (maksymalnie 10000 znaków)")
+    .trim(),
+  type: z.enum(["marketing", "content", "strategy"])
+});
 
 export default function AIStudio() {
   const { user } = useAuth();
@@ -30,10 +39,13 @@ export default function AIStudio() {
   const [contentType, setContentType] = useState("content");
 
   const generateContent = async () => {
-    if (!prompt.trim()) {
+    // Validate input
+    const validation = promptSchema.safeParse({ prompt, type: contentType });
+    
+    if (!validation.success) {
       toast({
-        title: "Błąd",
-        description: "Wprowadź prompt do generowania treści",
+        title: "Błąd walidacji",
+        description: validation.error.issues[0].message,
         variant: "destructive",
       });
       return;
@@ -42,7 +54,7 @@ export default function AIStudio() {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("ai-content", {
-        body: { prompt, type: contentType },
+        body: validation.data,
       });
 
       if (error) throw error;

@@ -1,9 +1,17 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const inputSchema = z.object({
+  prompt: z.string().min(1, "Prompt is required").max(10000, "Prompt too long (max 10000 characters)").trim(),
+  contentType: z.enum(["social_post", "blog_article", "email", "ad_copy"]).default("social_post"),
+  channel: z.enum(["instagram", "facebook", "linkedin", "twitter", "tiktok", "email", "blog"]).default("instagram"),
+  generateImage: z.boolean().default(false)
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -11,7 +19,17 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, contentType, channel, generateImage } = await req.json();
+    const body = await req.json();
+    const validation = inputSchema.safeParse(body);
+    
+    if (!validation.success) {
+      return new Response(
+        JSON.stringify({ error: validation.error.issues[0].message }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
+    const { prompt, contentType, channel, generateImage } = validation.data;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {

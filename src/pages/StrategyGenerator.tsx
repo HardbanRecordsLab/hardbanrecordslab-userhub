@@ -10,6 +10,17 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Loader2, Lightbulb, Save } from "lucide-react";
 import { motion } from "framer-motion";
+import { z } from "zod";
+
+const strategySchema = z.object({
+  companyName: z.string().min(1, "Nazwa firmy jest wymagana").max(200, "Nazwa firmy jest zbyt długa").trim(),
+  industry: z.string().min(1, "Branża jest wymagana").max(200, "Nazwa branży jest zbyt długa").trim(),
+  productService: z.string().min(1, "Produkt/Usługa jest wymagana").max(2000, "Opis jest zbyt długi").trim(),
+  targetAudience: z.string().max(2000, "Opis grupy docelowej jest zbyt długi").trim().optional(),
+  goals: z.string().max(1000, "Opis celów jest zbyt długi").trim().optional(),
+  budget: z.string().max(200, "Opis budżetu jest zbyt długi").trim().optional(),
+  timeline: z.string().max(200, "Opis timeline jest zbyt długi").trim().optional()
+});
 
 export default function StrategyGenerator() {
   const { user } = useAuth();
@@ -37,10 +48,13 @@ export default function StrategyGenerator() {
   };
 
   const generateStrategy = async () => {
-    if (!formData.companyName || !formData.industry || !formData.productService) {
+    // Validate input
+    const validation = strategySchema.safeParse(formData);
+    
+    if (!validation.success) {
       toast({
-        title: "Błąd",
-        description: "Wypełnij przynajmniej nazwę firmy, branżę i produkt/usługę",
+        title: "Błąd walidacji",
+        description: validation.error.issues[0].message,
         variant: "destructive",
       });
       return;
@@ -49,7 +63,7 @@ export default function StrategyGenerator() {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("generate-strategy", {
-        body: formData
+        body: validation.data
       });
 
       if (error) throw error;

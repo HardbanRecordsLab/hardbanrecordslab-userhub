@@ -1,9 +1,20 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+const inputSchema = z.object({
+  companyName: z.string().min(1, "Company name is required").max(200, "Company name too long").trim(),
+  industry: z.string().min(1, "Industry is required").max(200, "Industry name too long").trim(),
+  productService: z.string().min(1, "Product/Service is required").max(2000, "Description too long").trim(),
+  targetAudience: z.string().max(2000, "Target audience description too long").trim().optional(),
+  goals: z.string().max(1000, "Goals description too long").trim().optional(),
+  budget: z.string().max(200, "Budget description too long").trim().optional(),
+  timeline: z.string().max(200, "Timeline description too long").trim().optional()
+});
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -11,6 +22,16 @@ serve(async (req) => {
   }
 
   try {
+    const body = await req.json();
+    const validation = inputSchema.safeParse(body);
+    
+    if (!validation.success) {
+      return new Response(
+        JSON.stringify({ error: validation.error.issues[0].message }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    
     const { 
       companyName, 
       industry, 
@@ -19,7 +40,7 @@ serve(async (req) => {
       goals, 
       budget, 
       timeline 
-    } = await req.json();
+    } = validation.data;
     
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     

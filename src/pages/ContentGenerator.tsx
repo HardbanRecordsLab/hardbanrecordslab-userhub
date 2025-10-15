@@ -11,6 +11,17 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Loader2, Wand2, Save, Copy } from "lucide-react";
 import { motion } from "framer-motion";
+import { z } from "zod";
+
+const contentSchema = z.object({
+  prompt: z.string()
+    .min(1, "Prompt nie może być pusty")
+    .max(10000, "Prompt jest zbyt długi (maksymalnie 10000 znaków)")
+    .trim(),
+  contentType: z.enum(["social_post", "blog_article", "email", "ad_copy"]),
+  channel: z.enum(["instagram", "facebook", "linkedin", "twitter", "tiktok", "email", "blog"]),
+  generateImage: z.boolean()
+});
 
 export default function ContentGenerator() {
   const { user } = useAuth();
@@ -26,10 +37,18 @@ export default function ContentGenerator() {
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
   const generateContent = async () => {
-    if (!prompt.trim()) {
+    // Validate input
+    const validation = contentSchema.safeParse({
+      prompt,
+      contentType,
+      channel,
+      generateImage
+    });
+    
+    if (!validation.success) {
       toast({
-        title: "Błąd",
-        description: "Wprowadź prompt do generowania treści",
+        title: "Błąd walidacji",
+        description: validation.error.issues[0].message,
         variant: "destructive",
       });
       return;
@@ -41,7 +60,7 @@ export default function ContentGenerator() {
 
     try {
       const { data, error } = await supabase.functions.invoke("generate-content", {
-        body: { prompt, contentType, channel, generateImage },
+        body: validation.data,
       });
 
       if (error) throw error;

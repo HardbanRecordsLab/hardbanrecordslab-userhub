@@ -187,7 +187,7 @@ export default function AuthPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Hasło</Label>
+                    <Label htmlFor="signup-password">Hasło (min. 12 znaków)</Label>
                     <Input
                       id="signup-password"
                       type="password"
@@ -196,8 +196,13 @@ export default function AuthPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       disabled={loading}
-                      minLength={6}
+                      minLength={12}
+                      pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
+                      title="Hasło musi zawierać min. 12 znaków, w tym wielką literę, małą literę, cyfrę i znak specjalny"
                     />
+                    <p className="text-xs text-muted-foreground">
+                      Wymagane: wielka litera, mała litera, cyfra i znak specjalny
+                    </p>
                   </div>
                   <Button
                     type="submit"

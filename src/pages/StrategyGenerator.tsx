@@ -75,7 +75,9 @@ export default function StrategyGenerator() {
         description: "Strategia została wygenerowana",
       });
     } catch (error: any) {
-      console.error("Error generating strategy:", error);
+      if (import.meta.env.DEV) {
+        console.error("Error generating strategy:", error);
+      }
       toast({
         title: "Błąd",
         description: error.message || "Wystąpił błąd podczas generowania strategii",
@@ -110,7 +112,9 @@ export default function StrategyGenerator() {
 
       navigate("/dashboard");
     } catch (error: any) {
-      console.error("Error saving strategy:", error);
+      if (import.meta.env.DEV) {
+        console.error("Error saving strategy:", error);
+      }
       toast({
         title: "Błąd",
         description: "Nie udało się zapisać strategii",

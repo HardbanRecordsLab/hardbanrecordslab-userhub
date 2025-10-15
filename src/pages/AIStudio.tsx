@@ -74,7 +74,9 @@ export default function AIStudio() {
         description: "Treść została wygenerowana",
       });
     } catch (error: any) {
-      console.error("Error generating content:", error);
+      if (import.meta.env.DEV) {
+        console.error("Error generating content:", error);
+      }
       toast({
         title: "Błąd",
         description: error.message || "Wystąpił błąd podczas generowania treści",

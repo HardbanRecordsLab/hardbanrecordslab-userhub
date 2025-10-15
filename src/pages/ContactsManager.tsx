@@ -63,7 +63,9 @@ export default function ContactsManager() {
       if (error) throw error;
       setContacts(data || []);
     } catch (error) {
-      console.error("Error fetching contacts:", error);
+      if (import.meta.env.DEV) {
+        console.error("Error fetching contacts:", error);
+      }
       toast({
         title: "Błąd",
         description: "Nie udało się pobrać kontaktów",
@@ -130,7 +132,9 @@ export default function ContactsManager() {
       });
       fetchContacts();
     } catch (error: any) {
-      console.error("Error saving contact:", error);
+      if (import.meta.env.DEV) {
+        console.error("Error saving contact:", error);
+      }
       toast({
         title: "Błąd",
         description: "Nie udało się dodać kontaktu",

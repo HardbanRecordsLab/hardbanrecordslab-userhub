@@ -75,7 +75,9 @@ export default function ContentGenerator() {
         description: "Treść została wygenerowana",
       });
     } catch (error: any) {
-      console.error("Error generating content:", error);
+      if (import.meta.env.DEV) {
+        console.error("Error generating content:", error);
+      }
       toast({
         title: "Błąd",
         description: error.message || "Wystąpił błąd podczas generowania treści",
@@ -110,7 +112,9 @@ export default function ContentGenerator() {
         description: "Treść została zapisana w bibliotece",
       });
     } catch (error: any) {
-      console.error("Error saving content:", error);
+      if (import.meta.env.DEV) {
+        console.error("Error saving content:", error);
+      }
       toast({
         title: "Błąd",
         description: "Nie udało się zapisać treści",

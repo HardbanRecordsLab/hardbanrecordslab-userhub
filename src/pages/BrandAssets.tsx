@@ -49,7 +49,9 @@ export default function BrandAssets() {
 
       setAssets(assetsWithUrls);
     } catch (error: any) {
-      console.error("Error loading assets:", error);
+      if (import.meta.env.DEV) {
+        console.error("Error loading assets:", error);
+      }
     } finally {
       setLoading(false);
     }

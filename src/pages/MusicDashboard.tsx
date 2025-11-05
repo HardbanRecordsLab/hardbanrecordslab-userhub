@@ -104,7 +104,7 @@ export default function MusicDashboard() {
   };
 
   const exportToRouteNote = (release: any) => {
-    // Przygotowanie danych w formacie CSV dla RouteNote
+    // Przygotowanie danych w formacie CSV dla HardbanRecords Lab
     const metadata = {
       "Release Title": release.title,
       "Artist Name": release.artist_name,
@@ -129,12 +129,12 @@ export default function MusicDashboard() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `routenote_${release.title.replace(/[^a-z0-9]/gi, '_')}.csv`;
+    a.download = `hardbanrecords_${release.title.replace(/[^a-z0-9]/gi, '_')}.csv`;
     a.click();
 
     toast({
       title: "Metadata wyeksportowana!",
-      description: "Plik CSV gotowy do importu w RouteNote",
+      description: "Plik CSV gotowy dla HardbanRecords Lab",
     });
   };
 
@@ -381,7 +381,7 @@ export default function MusicDashboard() {
                       onClick={() => prepareRouteNotePackage(release)}
                     >
                       <CheckSquare className="mr-2 h-4 w-4" />
-                      Przygotuj do RouteNote
+                      Przygotuj do Dystrybucji
                     </Button>
                     <div className="flex gap-2">
                       <Button 
@@ -397,10 +397,10 @@ export default function MusicDashboard() {
                         variant="outline" 
                         size="sm" 
                         className="flex-1"
-                        onClick={() => window.open("https://www.routenote.com/", "_blank")}
+                        onClick={() => window.open("https://www.hardbanrecords.com/", "_blank")}
                       >
                         <ExternalLink className="mr-2 h-3 w-3" />
-                        RouteNote
+                        HardbanRecords
                       </Button>
                     </div>
                   </div>
@@ -438,7 +438,7 @@ export default function MusicDashboard() {
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-bold">Checklist dystrybucji RouteNote</h2>
+                  <h2 className="text-2xl font-bold">Checklist dystrybucji HardbanRecords Lab</h2>
                   <Button variant="ghost" size="sm" onClick={() => setShowChecklist(false)}>
                     ✕
                   </Button>
@@ -481,27 +481,27 @@ export default function MusicDashboard() {
                     <div className="space-y-2 text-sm">
                       <div className="flex items-start gap-2">
                         <span className="font-semibold text-primary">1.</span>
-                        <span>Zaloguj się do <a href="https://www.routenote.com/" target="_blank" className="text-primary hover:underline">RouteNote</a></span>
+                        <span>Przygotuj materiały zgodnie z wymaganiami HardbanRecords Lab</span>
                       </div>
                       <div className="flex items-start gap-2">
                         <span className="font-semibold text-primary">2.</span>
-                        <span>Kliknij "Release Music" → "Upload Release"</span>
+                        <span>Skontaktuj się z HardbanRecords Lab w celu rozpoczęcia procesu dystrybucji</span>
                       </div>
                       <div className="flex items-start gap-2">
                         <span className="font-semibold text-primary">3.</span>
-                        <span>Wypełnij formularz danymi lub zaimportuj plik CSV</span>
+                        <span>Przekaż plik CSV z metadanymi oraz materiały audio i graficzne</span>
                       </div>
                       <div className="flex items-start gap-2">
                         <span className="font-semibold text-primary">4.</span>
-                        <span>Wgraj pliki audio i okładkę</span>
+                        <span>HardbanRecords Lab przygotuje wydanie do dystrybucji</span>
                       </div>
                       <div className="flex items-start gap-2">
                         <span className="font-semibold text-primary">5.</span>
-                        <span>Wybierz platformy dystrybucji (Spotify, Apple Music, itd.)</span>
+                        <span>Twoja muzyka zostanie dystrybuowana na platformy (Spotify, Apple Music, itd.)</span>
                       </div>
                       <div className="flex items-start gap-2">
                         <span className="font-semibold text-primary">6.</span>
-                        <span>Sprawdź i zatwierdź wydanie</span>
+                        <span>Otrzymasz potwierdzenie publikacji i dostęp do statystyk</span>
                       </div>
                     </div>
                   </div>
@@ -539,10 +539,10 @@ export default function MusicDashboard() {
                   <Button 
                     variant="outline"
                     className="flex-1"
-                    onClick={() => window.open("https://www.routenote.com/", "_blank")}
+                    onClick={() => window.open("https://www.hardbanrecords.com/", "_blank")}
                   >
                     <ExternalLink className="mr-2 h-4 w-4" />
-                    Otwórz RouteNote
+                    Otwórz HardbanRecords
                   </Button>
                 </div>
               </div>

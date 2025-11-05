@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import MusicDashboard from "./pages/MusicDashboard";
+import AdminMusicReview from "./pages/AdminMusicReview";
 import AIStudio from "./pages/AIStudio";
 import StrategyGenerator from "./pages/StrategyGenerator";
 import ContentGenerator from "./pages/ContentGenerator";
@@ -41,6 +42,11 @@ const App = () => (
             <Route path="/dashboard/music" element={
               <ProtectedRoute>
                 <MusicDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/music-review" element={
+              <ProtectedRoute>
+                <AdminMusicReview />
               </ProtectedRoute>
             } />
             <Route path="/dashboard/ai-studio" element={

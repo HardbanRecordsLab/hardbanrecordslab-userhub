@@ -374,8 +374,12 @@ export type Database = {
       }
       music_releases: {
         Row: {
+          additional_files: Json | null
+          admin_notes: string | null
           album_type: string | null
           artist_name: string
+          audio_file_url: string | null
+          cover_file_url: string | null
           cover_image_url: string | null
           created_at: string | null
           description: string | null
@@ -386,16 +390,23 @@ export type Database = {
           metadata: Json | null
           release_date: string | null
           revenue_data: Json | null
-          status: Database["public"]["Enums"]["project_status"] | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["release_status"] | null
           streaming_stats: Json | null
+          submitted_at: string | null
           title: string
           upc_code: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          additional_files?: Json | null
+          admin_notes?: string | null
           album_type?: string | null
           artist_name: string
+          audio_file_url?: string | null
+          cover_file_url?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
@@ -406,16 +417,23 @@ export type Database = {
           metadata?: Json | null
           release_date?: string | null
           revenue_data?: Json | null
-          status?: Database["public"]["Enums"]["project_status"] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["release_status"] | null
           streaming_stats?: Json | null
+          submitted_at?: string | null
           title: string
           upc_code?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          additional_files?: Json | null
+          admin_notes?: string | null
           album_type?: string | null
           artist_name?: string
+          audio_file_url?: string | null
+          cover_file_url?: string | null
           cover_image_url?: string | null
           created_at?: string | null
           description?: string | null
@@ -426,8 +444,11 @@ export type Database = {
           metadata?: Json | null
           release_date?: string | null
           revenue_data?: Json | null
-          status?: Database["public"]["Enums"]["project_status"] | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["release_status"] | null
           streaming_stats?: Json | null
+          submitted_at?: string | null
           title?: string
           upc_code?: string | null
           updated_at?: string | null
@@ -710,6 +731,13 @@ export type Database = {
       app_role: "admin" | "moderator" | "user" | "artist" | "label"
       campaign_status: "draft" | "active" | "paused" | "completed" | "archived"
       project_status: "draft" | "pending" | "published" | "archived"
+      release_status:
+        | "draft"
+        | "submitted"
+        | "under_review"
+        | "approved"
+        | "published"
+        | "rejected"
       user_role: "artist" | "label" | "admin" | "user"
     }
     CompositeTypes: {
@@ -841,6 +869,14 @@ export const Constants = {
       app_role: ["admin", "moderator", "user", "artist", "label"],
       campaign_status: ["draft", "active", "paused", "completed", "archived"],
       project_status: ["draft", "pending", "published", "archived"],
+      release_status: [
+        "draft",
+        "submitted",
+        "under_review",
+        "approved",
+        "published",
+        "rejected",
+      ],
       user_role: ["artist", "label", "admin", "user"],
     },
   },

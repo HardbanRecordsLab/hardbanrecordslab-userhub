@@ -9,18 +9,20 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
+import { Badge } from "@/components/ui/badge";
 import { 
   Music, 
   Plus, 
   Upload, 
   Calendar,
   Globe,
-  DollarSign,
   Loader2,
   ArrowLeft,
   Download,
-  ExternalLink,
-  CheckSquare
+  CheckSquare,
+  FileAudio,
+  Image as ImageIcon,
+  Send
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -39,9 +41,11 @@ export default function MusicDashboard() {
     description: "",
     genre: "",
   });
+  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedRelease, setSelectedRelease] = useState<any>(null);
-  const [showChecklist, setShowChecklist] = useState(false);
-  const [zapierWebhook, setZapierWebhook] = useState("");
+  const [showSubmitDialog, setShowSubmitDialog] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -61,21 +65,71 @@ export default function MusicDashboard() {
     if (data) setReleases(data);
   };
 
+  const uploadFile = async (file: File, folder: string, releaseId: string) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${releaseId}/${folder}/${Date.now()}.${fileExt}`;
+    const filePath = `${user?.id}/${fileName}`;
+
+    const { error: uploadError, data } = await supabase.storage
+      .from('music-releases')
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('music-releases')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const { error } = await supabase
+      // First create the release
+      const { data: release, error: insertError } = await supabase
         .from("music_releases")
         .insert({
           ...formData,
           user_id: user?.id,
           genre: formData.genre.split(",").map(g => g.trim()),
           status: "draft",
-        });
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (insertError) throw insertError;
+
+      // Upload files if provided
+      let audioUrl = null;
+      let coverUrl = null;
+
+      if (audioFile) {
+        setUploadProgress(25);
+        audioUrl = await uploadFile(audioFile, 'audio', release.id);
+      }
+
+      if (coverFile) {
+        setUploadProgress(50);
+        coverUrl = await uploadFile(coverFile, 'cover', release.id);
+      }
+
+      // Update release with file URLs
+      if (audioUrl || coverUrl) {
+        const { error: updateError } = await supabase
+          .from("music_releases")
+          .update({
+            audio_file_url: audioUrl,
+            cover_file_url: coverUrl,
+          })
+          .eq('id', release.id);
+
+        if (updateError) throw updateError;
+      }
+
+      setUploadProgress(100);
 
       toast({
         title: "Sukces!",
@@ -91,6 +145,9 @@ export default function MusicDashboard() {
         description: "",
         genre: "",
       });
+      setAudioFile(null);
+      setCoverFile(null);
+      setUploadProgress(0);
       loadReleases();
     } catch (error: any) {
       toast({
@@ -101,6 +158,48 @@ export default function MusicDashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const submitForReview = async (releaseId: string) => {
+    try {
+      const { error } = await supabase
+        .from("music_releases")
+        .update({
+          status: "submitted",
+          submitted_at: new Date().toISOString(),
+        })
+        .eq('id', releaseId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Wysłano do weryfikacji!",
+        description: "Twoje wydanie zostało przesłane do weryfikacji przez HardbanRecords Lab",
+      });
+
+      loadReleases();
+      setShowSubmitDialog(false);
+    } catch (error: any) {
+      toast({
+        title: "Błąd",
+        description: error.message || "Wystąpił błąd podczas wysyłania",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+      draft: { label: "Szkic", variant: "outline" },
+      submitted: { label: "Wysłano", variant: "secondary" },
+      under_review: { label: "W weryfikacji", variant: "default" },
+      approved: { label: "Zatwierdzono", variant: "default" },
+      published: { label: "Opublikowano", variant: "default" },
+      rejected: { label: "Odrzucono", variant: "destructive" },
+    };
+
+    const config = statusConfig[status] || statusConfig.draft;
+    return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
   const exportToRouteNote = (release: any) => {
@@ -138,46 +237,9 @@ export default function MusicDashboard() {
     });
   };
 
-  const prepareRouteNotePackage = (release: any) => {
+  const prepareForSubmit = (release: any) => {
     setSelectedRelease(release);
-    setShowChecklist(true);
-  };
-
-  const sendZapierWebhook = async (release: any) => {
-    if (!zapierWebhook) {
-      toast({
-        title: "Brak webhooka",
-        description: "Wprowadź URL webhooka Zapier",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      await fetch(zapierWebhook, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        mode: "no-cors",
-        body: JSON.stringify({
-          release_title: release.title,
-          artist_name: release.artist_name,
-          release_date: release.release_date,
-          status: release.status,
-          timestamp: new Date().toISOString(),
-        }),
-      });
-
-      toast({
-        title: "Powiadomienie wysłane",
-        description: "Sprawdź historię Zap w Zapier",
-      });
-    } catch (error) {
-      toast({
-        title: "Błąd",
-        description: "Nie udało się wysłać webhooka",
-        variant: "destructive",
-      });
-    }
+    setShowSubmitDialog(true);
   };
 
   return (
@@ -298,6 +360,59 @@ export default function MusicDashboard() {
                       rows={4}
                     />
                   </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="audio">Plik Audio (opcjonalnie)</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id="audio"
+                          type="file"
+                          accept="audio/*"
+                          onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
+                          disabled={loading}
+                          className="cursor-pointer"
+                        />
+                        {audioFile && <FileAudio className="h-5 w-5 text-primary" />}
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        WAV, MP3, FLAC (max 100MB)
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="cover">Okładka (opcjonalnie)</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          id="cover"
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
+                          disabled={loading}
+                          className="cursor-pointer"
+                        />
+                        {coverFile && <ImageIcon className="h-5 w-5 text-primary" />}
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        JPG, PNG (3000x3000px zalecane)
+                      </p>
+                    </div>
+                  </div>
+
+                  {uploadProgress > 0 && uploadProgress < 100 && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Przesyłanie...</span>
+                        <span>{uploadProgress}%</span>
+                      </div>
+                      <div className="w-full bg-secondary rounded-full h-2">
+                        <div 
+                          className="bg-primary h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${uploadProgress}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex gap-4">
                     <Button type="submit" variant="gradient" disabled={loading}>
                       {loading ? (
@@ -340,13 +455,7 @@ export default function MusicDashboard() {
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
                     <Music className="h-8 w-8 text-primary" />
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      release.status === 'published' 
-                        ? 'bg-green-500/20 text-green-400'
-                        : 'bg-yellow-500/20 text-yellow-400'
-                    }`}>
-                      {release.status === 'published' ? 'Opublikowane' : 'Szkic'}
-                    </span>
+                    {getStatusBadge(release.status)}
                   </div>
                   <CardTitle>{release.title}</CardTitle>
                   <p className="text-sm text-muted-foreground">
@@ -373,36 +482,49 @@ export default function MusicDashboard() {
                       </div>
                     )}
                   </div>
-                  <div className="mt-4 space-y-2">
-                    <Button 
-                      variant="gradient" 
-                      size="sm" 
-                      className="w-full"
-                      onClick={() => prepareRouteNotePackage(release)}
-                    >
-                      <CheckSquare className="mr-2 h-4 w-4" />
-                      Przygotuj do Dystrybucji
-                    </Button>
-                    <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="flex-1"
-                        onClick={() => exportToRouteNote(release)}
-                      >
-                        <Download className="mr-2 h-3 w-3" />
-                        Eksport CSV
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="flex-1"
-                        onClick={() => window.open("https://www.hardbanrecords.com/", "_blank")}
-                      >
-                        <ExternalLink className="mr-2 h-3 w-3" />
-                        HardbanRecords
-                      </Button>
+                  {release.admin_notes && (
+                    <div className="mt-3 p-3 bg-muted/50 rounded-lg">
+                      <p className="text-xs font-semibold mb-1">Notatki od zespołu:</p>
+                      <p className="text-xs text-muted-foreground">{release.admin_notes}</p>
                     </div>
+                  )}
+
+                  <div className="mt-4 space-y-2">
+                    {release.status === 'draft' && release.audio_file_url && release.cover_file_url && (
+                      <Button 
+                        variant="gradient" 
+                        size="sm" 
+                        className="w-full"
+                        onClick={() => prepareForSubmit(release)}
+                      >
+                        <Send className="mr-2 h-4 w-4" />
+                        Wyślij do Weryfikacji
+                      </Button>
+                    )}
+                    
+                    {release.status === 'draft' && (!release.audio_file_url || !release.cover_file_url) && (
+                      <div className="text-xs text-muted-foreground text-center py-2">
+                        Dodaj plik audio i okładkę aby móc wysłać do weryfikacji
+                      </div>
+                    )}
+
+                    {(release.status === 'submitted' || release.status === 'under_review') && (
+                      <div className="text-xs text-center py-2 text-primary">
+                        Wydanie jest weryfikowane przez zespół HardbanRecords Lab
+                      </div>
+                    )}
+
+                    {release.status === 'approved' && (
+                      <div className="text-xs text-center py-2 text-green-400">
+                        Wydanie zatwierdzone! Wkrótce zostanie przesłane do dystrybucji.
+                      </div>
+                    )}
+
+                    {release.status === 'published' && (
+                      <div className="text-xs text-center py-2 text-green-400">
+                        Wydanie jest dostępne na platformach streamingowych!
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -428,22 +550,17 @@ export default function MusicDashboard() {
           )}
         </div>
 
-        {/* RouteNote Checklist Modal */}
-        {showChecklist && selectedRelease && (
+        {/* Submit Dialog */}
+        {showSubmitDialog && selectedRelease && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-card border border-border rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-card border border-border rounded-lg max-w-lg w-full"
             >
               <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-bold">Checklist dystrybucji HardbanRecords Lab</h2>
-                  <Button variant="ghost" size="sm" onClick={() => setShowChecklist(false)}>
-                    ✕
-                  </Button>
-                </div>
-
+                <h2 className="text-2xl font-bold mb-4">Wyślij do Weryfikacji</h2>
+                
                 <div className="space-y-4 mb-6">
                   <div className="p-4 bg-primary/10 rounded-lg">
                     <h3 className="font-semibold mb-2">{selectedRelease.title}</h3>
@@ -451,98 +568,46 @@ export default function MusicDashboard() {
                   </div>
 
                   <div className="space-y-3">
-                    <h4 className="font-semibold">Wymagane materiały:</h4>
+                    <h4 className="font-semibold">Gotowe materiały:</h4>
                     <div className="space-y-2 text-sm">
-                      <label className="flex items-center gap-2">
-                        <input type="checkbox" className="rounded" />
-                        <span>Pliki audio (WAV, 16-bit/44.1kHz minimum)</span>
-                      </label>
-                      <label className="flex items-center gap-2">
-                        <input type="checkbox" className="rounded" />
-                        <span>Okładka albumu (3000x3000px, JPG/PNG)</span>
-                      </label>
-                      <label className="flex items-center gap-2">
-                        <input type="checkbox" className="rounded" />
-                        <span>Metadata (tytuły utworów, artyści, autorzy)</span>
-                      </label>
-                      <label className="flex items-center gap-2">
-                        <input type="checkbox" className="rounded" />
-                        <span>Kody ISRC (jeśli posiadasz)</span>
-                      </label>
-                      <label className="flex items-center gap-2">
-                        <input type="checkbox" className="rounded" />
-                        <span>Kod UPC/EAN (jeśli posiadasz)</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <h4 className="font-semibold">Kroki dystrybucji:</h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-start gap-2">
-                        <span className="font-semibold text-primary">1.</span>
-                        <span>Przygotuj materiały zgodnie z wymaganiami HardbanRecords Lab</span>
+                      <div className="flex items-center gap-2">
+                        <CheckSquare className="h-4 w-4 text-green-400" />
+                        <span>Plik audio przesłany</span>
                       </div>
-                      <div className="flex items-start gap-2">
-                        <span className="font-semibold text-primary">2.</span>
-                        <span>Skontaktuj się z HardbanRecords Lab w celu rozpoczęcia procesu dystrybucji</span>
+                      <div className="flex items-center gap-2">
+                        <CheckSquare className="h-4 w-4 text-green-400" />
+                        <span>Okładka przesłana</span>
                       </div>
-                      <div className="flex items-start gap-2">
-                        <span className="font-semibold text-primary">3.</span>
-                        <span>Przekaż plik CSV z metadanymi oraz materiały audio i graficzne</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="font-semibold text-primary">4.</span>
-                        <span>HardbanRecords Lab przygotuje wydanie do dystrybucji</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="font-semibold text-primary">5.</span>
-                        <span>Twoja muzyka zostanie dystrybuowana na platformy (Spotify, Apple Music, itd.)</span>
-                      </div>
-                      <div className="flex items-start gap-2">
-                        <span className="font-semibold text-primary">6.</span>
-                        <span>Otrzymasz potwierdzenie publikacji i dostęp do statystyk</span>
+                      <div className="flex items-center gap-2">
+                        <CheckSquare className="h-4 w-4 text-green-400" />
+                        <span>Metadata wypełniona</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <h4 className="font-semibold">Automatyzacja z Zapier (opcjonalnie):</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Możesz skonfigurować Zap, który wyśle Ci powiadomienie email lub do Slack gdy wydanie będzie gotowe do uploadowania.
+                  <div className="p-4 bg-muted/50 rounded-lg">
+                    <p className="text-sm">
+                      Po wysłaniu, zespół HardbanRecords Lab zweryfikuje Twoje wydanie i skontaktuje się z Tobą w sprawie dalszych kroków. 
+                      Proces weryfikacji zazwyczaj trwa 1-2 dni robocze.
                     </p>
-                    <div className="flex gap-2">
-                      <Input
-                        placeholder="Wklej URL webhooka Zapier"
-                        value={zapierWebhook}
-                        onChange={(e) => setZapierWebhook(e.target.value)}
-                      />
-                      <Button 
-                        variant="outline"
-                        onClick={() => sendZapierWebhook(selectedRelease)}
-                      >
-                        Wyślij
-                      </Button>
-                    </div>
                   </div>
                 </div>
 
                 <div className="flex gap-3">
                   <Button 
-                    variant="gradient" 
-                    className="flex-1"
-                    onClick={() => exportToRouteNote(selectedRelease)}
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    Pobierz CSV
-                  </Button>
-                  <Button 
                     variant="outline"
                     className="flex-1"
-                    onClick={() => window.open("https://www.hardbanrecords.com/", "_blank")}
+                    onClick={() => setShowSubmitDialog(false)}
                   >
-                    <ExternalLink className="mr-2 h-4 w-4" />
-                    Otwórz HardbanRecords
+                    Anuluj
+                  </Button>
+                  <Button 
+                    variant="gradient" 
+                    className="flex-1"
+                    onClick={() => submitForReview(selectedRelease.id)}
+                  >
+                    <Send className="mr-2 h-4 w-4" />
+                    Wyślij
                   </Button>
                 </div>
               </div>

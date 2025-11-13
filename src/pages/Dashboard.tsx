@@ -171,6 +171,14 @@ export default function Dashboard() {
       link: "/dashboard/ai-studio",
       stats: "Generuj treści",
       description: "Twórz z pomocą AI"
+    },
+    {
+      title: "Prometheus AI",
+      icon: Sparkles,
+      color: "accent",
+      link: "/prometheus-ai",
+      stats: "Open Source",
+      description: "System AI - 100% darmowy"
     }
   ];
 

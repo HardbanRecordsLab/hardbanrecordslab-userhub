@@ -15,6 +15,7 @@ import AdminMusicReview from "./pages/AdminMusicReview";
 import AIStudio from "./pages/AIStudio";
 import StrategyGenerator from "./pages/StrategyGenerator";
 import ContentGenerator from "./pages/ContentGenerator";
+import PrometheusAI from "./pages/PrometheusAI";
 import ContactsManager from "./pages/ContactsManager";
 import PublicationCalendar from "./pages/PublicationCalendar";
 import AnalyticsDashboard from "./pages/AnalyticsDashboard";
@@ -87,6 +88,11 @@ const App = () => (
             <Route path="/dashboard/brand-assets" element={
               <ProtectedRoute>
                 <BrandAssets />
+              </ProtectedRoute>
+            } />
+            <Route path="/prometheus-ai" element={
+              <ProtectedRoute>
+                <PrometheusAI />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

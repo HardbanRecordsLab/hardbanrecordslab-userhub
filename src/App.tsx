@@ -16,6 +16,10 @@ import AIStudio from "./pages/AIStudio";
 import StrategyGenerator from "./pages/StrategyGenerator";
 import ContentGenerator from "./pages/ContentGenerator";
 import PrometheusAI from "./pages/PrometheusAI";
+import PrometheusAutomation from "./pages/PrometheusAutomation";
+import PrometheusNewsroom from "./pages/PrometheusNewsroom";
+import PrometheusPodcasts from "./pages/PrometheusPodcasts";
+import PrometheusARVR from "./pages/PrometheusARVR";
 import ContactsManager from "./pages/ContactsManager";
 import PublicationCalendar from "./pages/PublicationCalendar";
 import AnalyticsDashboard from "./pages/AnalyticsDashboard";
@@ -93,6 +97,26 @@ const App = () => (
             <Route path="/prometheus-ai" element={
               <ProtectedRoute>
                 <PrometheusAI />
+              </ProtectedRoute>
+            } />
+            <Route path="/prometheus-automation" element={
+              <ProtectedRoute>
+                <PrometheusAutomation />
+              </ProtectedRoute>
+            } />
+            <Route path="/prometheus-newsroom" element={
+              <ProtectedRoute>
+                <PrometheusNewsroom />
+              </ProtectedRoute>
+            } />
+            <Route path="/prometheus-podcasts" element={
+              <ProtectedRoute>
+                <PrometheusPodcasts />
+              </ProtectedRoute>
+            } />
+            <Route path="/prometheus-arvr" element={
+              <ProtectedRoute>
+                <PrometheusARVR />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

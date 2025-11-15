@@ -25,6 +25,7 @@ import PublicationCalendar from "./pages/PublicationCalendar";
 import AnalyticsDashboard from "./pages/AnalyticsDashboard";
 import RevenueTracker from "./pages/RevenueTracker";
 import BrandAssets from "./pages/BrandAssets";
+import ComprehensiveReport from "./pages/ComprehensiveReport";
 
 const queryClient = new QueryClient();
 
@@ -117,6 +118,11 @@ const App = () => (
             <Route path="/prometheus-arvr" element={
               <ProtectedRoute>
                 <PrometheusARVR />
+              </ProtectedRoute>
+            } />
+            <Route path="/comprehensive-report" element={
+              <ProtectedRoute>
+                <ComprehensiveReport />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

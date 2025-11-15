@@ -21,7 +21,8 @@ import {
   Wand2,
   Mail,
   Calendar,
-  Image
+  Image,
+  FileText
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -179,6 +180,14 @@ export default function Dashboard() {
       link: "/prometheus-ai",
       stats: "Open Source",
       description: "System AI - 100% darmowy"
+    },
+    {
+      title: "Raport Aplikacji",
+      icon: FileText,
+      color: "secondary",
+      link: "/comprehensive-report",
+      stats: "40+ stron",
+      description: "Kompletny raport oceny produktu"
     }
   ];
 

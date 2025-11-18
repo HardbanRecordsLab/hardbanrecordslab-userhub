@@ -2974,24 +2974,3 @@ const ComprehensiveReport = () => {
 };
 
 export default ComprehensiveReport;
-        </div>
-      </div>
-
-      <style>{`
-        @media print {
-          .page-break {
-            page-break-after: always;
-          }
-          .print\\:hidden {
-            display: none !important;
-          }
-          .print\\:space-y-4 > * + * {
-            margin-top: 1rem !important;
-          }
-        }
-      `}</style>
-    </div>
-  );
-};
-
-export default ComprehensiveReport;

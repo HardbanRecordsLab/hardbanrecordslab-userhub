@@ -3,8 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, Download, Printer } from "lucide-react";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const ComprehensiveReport = () => {
+  const { toast } = useToast();
   const [reportData] = useState({
     appName: "Prometheus AI Music Platform",
     version: "1.0",
@@ -17,8 +21,63 @@ const ComprehensiveReport = () => {
     window.print();
   };
 
-  const handleExport = () => {
-    alert("Funkcja eksportu PDF zostanie wkrótce dodana");
+  const handleExport = async () => {
+    try {
+      toast({
+        title: "Generowanie PDF...",
+        description: "Proszę czekać, trwa tworzenie dokumentu.",
+      });
+
+      const reportElement = document.getElementById("comprehensive-report-content");
+      if (!reportElement) {
+        throw new Error("Nie znaleziono elementu raportu");
+      }
+
+      const canvas = await html2canvas(reportElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        windowWidth: reportElement.scrollWidth,
+        windowHeight: reportElement.scrollHeight,
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      pdf.save(`prometheus-raport-${reportData.date}.pdf`);
+
+      toast({
+        title: "Sukces!",
+        description: "Raport został pobrany jako PDF.",
+      });
+    } catch (error) {
+      console.error("Błąd generowania PDF:", error);
+      toast({
+        title: "Błąd",
+        description: "Nie udało się wygenerować PDF. Spróbuj ponownie.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -52,7 +111,7 @@ const ComprehensiveReport = () => {
           </div>
         </motion.div>
 
-        <div className="space-y-8 print:space-y-4">
+        <div id="comprehensive-report-content" className="space-y-8 print:space-y-4">
           {/* 0. STRONA TYTUŁOWA */}
           <Card className="page-break">
             <CardHeader>

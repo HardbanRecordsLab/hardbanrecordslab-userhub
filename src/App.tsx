@@ -26,6 +26,12 @@ import AnalyticsDashboard from "./pages/AnalyticsDashboard";
 import RevenueTracker from "./pages/RevenueTracker";
 import BrandAssets from "./pages/BrandAssets";
 import ComprehensiveReport from "./pages/ComprehensiveReport";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
+import MarketingDashboard from "./pages/MarketingDashboard";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import FAQ from "./pages/FAQ";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +46,9 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
@@ -48,6 +57,21 @@ const App = () => (
             <Route path="/dashboard/music" element={
               <ProtectedRoute>
                 <MusicDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/marketing" element={
+              <ProtectedRoute>
+                <MarketingDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/profile" element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            } />
+            <Route path="/dashboard/settings" element={
+              <ProtectedRoute>
+                <Settings />
               </ProtectedRoute>
             } />
             <Route path="/admin/music-review" element={

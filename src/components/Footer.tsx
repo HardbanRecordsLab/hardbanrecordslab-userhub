@@ -1,42 +1,43 @@
 import { Music2, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const footerLinks = {
   Produkt: [
-    { label: "Funkcje", href: "#features" },
-    { label: "Moduły", href: "#modules" },
-    { label: "Cennik", href: "#pricing" },
-    { label: "API", href: "#contact" },
-    { label: "Integracje", href: "#contact" },
+    { label: "Funkcje", href: "#features", isAnchor: true },
+    { label: "Moduły", href: "#modules", isAnchor: true },
+    { label: "Cennik", href: "#pricing", isAnchor: true },
+    { label: "API", href: "#contact", isAnchor: true },
+    { label: "Integracje", href: "#contact", isAnchor: true },
   ],
   Firma: [
-    { label: "O Nas", href: "#contact" },
-    { label: "Kariera", href: "#contact" },
-    { label: "Blog", href: "#contact" },
-    { label: "Prasa", href: "#contact" },
-    { label: "Partnerzy", href: "#contact" },
+    { label: "O Nas", href: "#about", isAnchor: true },
+    { label: "Kariera", href: "mailto:kariera@hardbanrecords.com", isAnchor: false },
+    { label: "Blog", href: "#contact", isAnchor: true },
+    { label: "Prasa", href: "mailto:prasa@hardbanrecords.com", isAnchor: false },
+    { label: "Partnerzy", href: "#contact", isAnchor: true },
   ],
   Wsparcie: [
-    { label: "Centrum Pomocy", href: "#contact" },
-    { label: "Dokumentacja", href: "#contact" },
-    { label: "Status", href: "#contact" },
-    { label: "Skontaktuj się z nami", href: "mailto:kontakt@hardbanrecords.com" },
-    { label: "FAQ", href: "#contact" },
+    { label: "Centrum Pomocy", href: "/faq", isAnchor: false },
+    { label: "Dokumentacja", href: "/faq", isAnchor: false },
+    { label: "Status", href: "#contact", isAnchor: true },
+    { label: "Kontakt", href: "mailto:kontakt@hardbanrecords.com", isAnchor: false },
+    { label: "FAQ", href: "/faq", isAnchor: false },
   ],
   Prawne: [
-    { label: "Prywatność", href: "#contact" },
-    { label: "Warunki", href: "#contact" },
-    { label: "RODO", href: "#contact" },
-    { label: "Licencje", href: "#contact" },
-    { label: "Cookies", href: "#contact" },
+    { label: "Prywatność", href: "/privacy", isAnchor: false },
+    { label: "Regulamin", href: "/terms", isAnchor: false },
+    { label: "RODO", href: "/privacy", isAnchor: false },
+    { label: "Licencje", href: "/terms", isAnchor: false },
+    { label: "Cookies", href: "/privacy", isAnchor: false },
   ],
 };
 
 const socialLinks = [
-  { icon: Facebook, href: "#" },
-  { icon: Twitter, href: "#" },
-  { icon: Instagram, href: "#" },
-  { icon: Linkedin, href: "#" },
-  { icon: Youtube, href: "#" },
+  { icon: Facebook, href: "https://facebook.com/hardbanrecords", label: "Facebook" },
+  { icon: Twitter, href: "https://twitter.com/hardbanrecords", label: "Twitter" },
+  { icon: Instagram, href: "https://instagram.com/hardbanrecords", label: "Instagram" },
+  { icon: Linkedin, href: "https://linkedin.com/company/hardbanrecords", label: "LinkedIn" },
+  { icon: Youtube, href: "https://youtube.com/@hardbanrecords", label: "YouTube" },
 ];
 
 export function Footer() {
@@ -62,6 +63,9 @@ export function Footer() {
                 <a
                   key={index}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
                   className="w-10 h-10 rounded-lg glass flex items-center justify-center hover:bg-white/10 transition-colors"
                 >
                   <social.icon className="w-5 h-5" />
@@ -77,12 +81,28 @@ export function Footer() {
               <ul className="space-y-2">
                 {links.map((link) => (
                   <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {link.label}
-                    </a>
+                    {link.isAnchor ? (
+                      <a
+                        href={link.href}
+                        className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    ) : link.href.startsWith("mailto:") ? (
+                      <a
+                        href={link.href}
+                        className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        to={link.href}
+                        className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -96,15 +116,15 @@ export function Footer() {
               © 2025 HardbanRecords Lab. Wszystkie prawa zastrzeżone.
             </p>
             <div className="flex gap-6">
-              <a href="#contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Polityka Prywatności
-              </a>
-              <a href="#contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link to="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Warunki Użytkowania
-              </a>
-              <a href="#contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              </Link>
+              <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                 Ustawienia Cookies
-              </a>
+              </Link>
             </div>
           </div>
         </div>

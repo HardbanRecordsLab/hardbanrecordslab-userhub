@@ -81,11 +81,7 @@ export function Features() {
               viewport={{ once: true }}
               className="group relative"
             >
-              <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500 -z-10"
-                style={{
-                  background: `linear-gradient(135deg, ${feature.gradient.split(' ')[1]}, ${feature.gradient.split(' ')[3]})`,
-                }}
-              />
+              <div className={`absolute inset-0 bg-gradient-to-r ${feature.gradient} opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-500 -z-10`} />
               <div className="glass p-6 rounded-xl h-full transition-all duration-300 group-hover:scale-105 group-hover:bg-white/10">
                 <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${feature.gradient} p-2.5 mb-4`}>
                   <feature.icon className="w-full h-full text-white" />

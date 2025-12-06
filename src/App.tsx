@@ -6,32 +6,41 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { lazy, Suspense } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
-import Dashboard from "./pages/Dashboard";
-import MusicDashboard from "./pages/MusicDashboard";
-import AdminMusicReview from "./pages/AdminMusicReview";
-import AIStudio from "./pages/AIStudio";
-import StrategyGenerator from "./pages/StrategyGenerator";
-import ContentGenerator from "./pages/ContentGenerator";
-import PrometheusAI from "./pages/PrometheusAI";
-import PrometheusAutomation from "./pages/PrometheusAutomation";
-import PrometheusNewsroom from "./pages/PrometheusNewsroom";
-import PrometheusPodcasts from "./pages/PrometheusPodcasts";
-import PrometheusARVR from "./pages/PrometheusARVR";
-import ContactsManager from "./pages/ContactsManager";
-import PublicationCalendar from "./pages/PublicationCalendar";
-import AnalyticsDashboard from "./pages/AnalyticsDashboard";
-import RevenueTracker from "./pages/RevenueTracker";
-import BrandAssets from "./pages/BrandAssets";
-import ComprehensiveReport from "./pages/ComprehensiveReport";
-import Profile from "./pages/Profile";
-import Settings from "./pages/Settings";
-import MarketingDashboard from "./pages/MarketingDashboard";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import FAQ from "./pages/FAQ";
+
+// Lazy load heavy pages
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const MusicDashboard = lazy(() => import("./pages/MusicDashboard"));
+const AdminMusicReview = lazy(() => import("./pages/AdminMusicReview"));
+const AIStudio = lazy(() => import("./pages/AIStudio"));
+const StrategyGenerator = lazy(() => import("./pages/StrategyGenerator"));
+const ContentGenerator = lazy(() => import("./pages/ContentGenerator"));
+const PrometheusAI = lazy(() => import("./pages/PrometheusAI"));
+const PrometheusAutomation = lazy(() => import("./pages/PrometheusAutomation"));
+const PrometheusNewsroom = lazy(() => import("./pages/PrometheusNewsroom"));
+const PrometheusPodcasts = lazy(() => import("./pages/PrometheusPodcasts"));
+const PrometheusARVR = lazy(() => import("./pages/PrometheusARVR"));
+const ContactsManager = lazy(() => import("./pages/ContactsManager"));
+const PublicationCalendar = lazy(() => import("./pages/PublicationCalendar"));
+const AnalyticsDashboard = lazy(() => import("./pages/AnalyticsDashboard"));
+const RevenueTracker = lazy(() => import("./pages/RevenueTracker"));
+const BrandAssets = lazy(() => import("./pages/BrandAssets"));
+const ComprehensiveReport = lazy(() => import("./pages/ComprehensiveReport"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Settings = lazy(() => import("./pages/Settings"));
+const MarketingDashboard = lazy(() => import("./pages/MarketingDashboard"));
+
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+  </div>
+);
 
 const queryClient = new QueryClient();
 
@@ -51,102 +60,142 @@ const App = () => (
             <Route path="/faq" element={<FAQ />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
-                <Dashboard />
+                <Suspense fallback={<PageLoader />}>
+                  <Dashboard />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/dashboard/music" element={
               <ProtectedRoute>
-                <MusicDashboard />
+                <Suspense fallback={<PageLoader />}>
+                  <MusicDashboard />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/dashboard/marketing" element={
               <ProtectedRoute>
-                <MarketingDashboard />
+                <Suspense fallback={<PageLoader />}>
+                  <MarketingDashboard />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/dashboard/profile" element={
               <ProtectedRoute>
-                <Profile />
+                <Suspense fallback={<PageLoader />}>
+                  <Profile />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/dashboard/settings" element={
               <ProtectedRoute>
-                <Settings />
+                <Suspense fallback={<PageLoader />}>
+                  <Settings />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/admin/music-review" element={
               <ProtectedRoute>
-                <AdminMusicReview />
+                <Suspense fallback={<PageLoader />}>
+                  <AdminMusicReview />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/dashboard/ai-studio" element={
               <ProtectedRoute>
-                <AIStudio />
+                <Suspense fallback={<PageLoader />}>
+                  <AIStudio />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/dashboard/strategy-generator" element={
               <ProtectedRoute>
-                <StrategyGenerator />
+                <Suspense fallback={<PageLoader />}>
+                  <StrategyGenerator />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/dashboard/content-generator" element={
               <ProtectedRoute>
-                <ContentGenerator />
+                <Suspense fallback={<PageLoader />}>
+                  <ContentGenerator />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/dashboard/contacts" element={
               <ProtectedRoute>
-                <ContactsManager />
+                <Suspense fallback={<PageLoader />}>
+                  <ContactsManager />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/dashboard/calendar" element={
               <ProtectedRoute>
-                <PublicationCalendar />
+                <Suspense fallback={<PageLoader />}>
+                  <PublicationCalendar />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/dashboard/analytics" element={
               <ProtectedRoute>
-                <AnalyticsDashboard />
+                <Suspense fallback={<PageLoader />}>
+                  <AnalyticsDashboard />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/dashboard/revenue" element={
               <ProtectedRoute>
-                <RevenueTracker />
+                <Suspense fallback={<PageLoader />}>
+                  <RevenueTracker />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/dashboard/brand-assets" element={
               <ProtectedRoute>
-                <BrandAssets />
+                <Suspense fallback={<PageLoader />}>
+                  <BrandAssets />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/prometheus-ai" element={
               <ProtectedRoute>
-                <PrometheusAI />
+                <Suspense fallback={<PageLoader />}>
+                  <PrometheusAI />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/prometheus-automation" element={
               <ProtectedRoute>
-                <PrometheusAutomation />
+                <Suspense fallback={<PageLoader />}>
+                  <PrometheusAutomation />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/prometheus-newsroom" element={
               <ProtectedRoute>
-                <PrometheusNewsroom />
+                <Suspense fallback={<PageLoader />}>
+                  <PrometheusNewsroom />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/prometheus-podcasts" element={
               <ProtectedRoute>
-                <PrometheusPodcasts />
+                <Suspense fallback={<PageLoader />}>
+                  <PrometheusPodcasts />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/prometheus-arvr" element={
               <ProtectedRoute>
-                <PrometheusARVR />
+                <Suspense fallback={<PageLoader />}>
+                  <PrometheusARVR />
+                </Suspense>
               </ProtectedRoute>
             } />
             <Route path="/comprehensive-report" element={
               <ProtectedRoute>
-                <ComprehensiveReport />
+                <Suspense fallback={<PageLoader />}>
+                  <ComprehensiveReport />
+                </Suspense>
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -41,7 +41,7 @@ export function Hero() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8"
           >
             <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm text-muted-foreground">Rewolucja dla Niezależnych Twórców</span>
+            <span className="text-sm text-muted-foreground">Zaoszczędź 15+ godzin tygodniowo na administracji</span>
           </motion.div>
 
           {/* Main heading */}
@@ -51,20 +51,36 @@ export function Hero() {
             transition={{ delay: 0.3 }}
             className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6"
           >
-            Jedna Platforma.
-            <span className="gradient-text block mt-2">Pełna Kontrola.</span>
+            Skup się na muzyce.
+            <span className="gradient-text block mt-2">Resztę robi AI.</span>
           </motion.h1>
 
-          {/* Subtitle */}
+          {/* Subtitle - clearer value proposition */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto"
+            className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto"
           >
-            HardbanRecords Lab to kompleksowy ekosystem dla artystów, wytwórni i twórców cyfrowych. 
-            Dystrybucja muzyki, publikacje, AI marketing - wszystko w jednym miejscu.
+            Jedna platforma zamiast 7 subskrypcji. Dystrybucja, marketing, analityka i CRM - 
+            wszystko z AI asystentem, który automatyzuje 80% rutynowych zadań.
           </motion.p>
+
+          {/* Value props */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45 }}
+            className="flex flex-wrap justify-center gap-4 mb-10 text-sm"
+          >
+            {[
+              "✓ Bez karty kredytowej",
+              "✓ 30 dni za darmo",
+              "✓ 90% przychodów dla Ciebie"
+            ].map((item, i) => (
+              <span key={i} className="text-muted-foreground">{item}</span>
+            ))}
+          </motion.div>
 
           {/* CTA Buttons */}
           <motion.div

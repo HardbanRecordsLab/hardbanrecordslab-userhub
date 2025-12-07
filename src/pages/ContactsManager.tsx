@@ -11,6 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { ListSkeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/EmptyState";
 import { ArrowLeft, Plus, Users, Mail, Phone, Star, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -359,14 +361,24 @@ export default function ContactsManager() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <div className="glass-dark border border-white/10 rounded-xl p-6">
+            <ListSkeleton rows={6} />
           </div>
         ) : filteredContacts.length === 0 ? (
           <Card className="glass-dark border-white/10">
-            <CardContent className="text-center py-12">
-              <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">Brak kontaktów do wyświetlenia</p>
+            <CardContent className="p-0">
+              <EmptyState
+                icon={Users}
+                title="Brak kontaktów"
+                description="Zacznij budować swoją bazę kontaktów branżowych - dziennikarzy, influencerów i partnerów."
+                actionLabel="Dodaj pierwszy kontakt"
+                onAction={() => setIsDialogOpen(true)}
+                tips={[
+                  "Dodaj dziennikarzy muzycznych z ulubionych portali",
+                  "Zapisuj influencerów z Twojego gatunku",
+                  "Notuj kontakty ze spotkań branżowych"
+                ]}
+              />
             </CardContent>
           </Card>
         ) : (

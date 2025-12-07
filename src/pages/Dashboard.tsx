@@ -4,6 +4,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { StatsCardSkeleton, CardSkeleton } from "@/components/ui/skeleton";
+import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { 
   Music, 
   BookOpen, 
@@ -24,13 +26,15 @@ import {
   Image,
   FileText
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [stats, setStats] = useState({
     releases: 0,
     publications: 0,
@@ -41,10 +45,21 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (user) {
-      loadProfile();
-      loadStats();
+      loadData();
     }
   }, [user]);
+
+  const loadData = async () => {
+    setLoading(true);
+    await Promise.all([loadProfile(), loadStats()]);
+    setLoading(false);
+    
+    // Check if user is new (no releases, no campaigns, etc.)
+    const onboardingCompleted = localStorage.getItem(`onboarding_${user?.id}`);
+    if (!onboardingCompleted) {
+      setShowOnboarding(true);
+    }
+  };
 
   const loadProfile = async () => {
     if (!user) return;
@@ -191,8 +206,22 @@ export default function Dashboard() {
     }
   ];
 
+  const handleOnboardingComplete = () => {
+    localStorage.setItem(`onboarding_${user?.id}`, 'true');
+    setShowOnboarding(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Onboarding Wizard */}
+      <AnimatePresence>
+        {showOnboarding && (
+          <OnboardingWizard 
+            onComplete={handleOnboardingComplete}
+            onSkip={handleOnboardingComplete}
+          />
+        )}
+      </AnimatePresence>
       {/* Sidebar */}
       <aside className={`fixed left-0 top-0 z-40 h-screen w-64 transition-transform ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -274,120 +303,138 @@ export default function Dashboard() {
 
           {/* Quick stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              <Card className="glass-dark border-white/10">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Wydania Muzyczne
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">{stats.releases}</span>
-                    <Music className="h-5 w-5 text-primary" />
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+            {loading ? (
+              <>
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <StatsCardSkeleton key={i} />
+                ))}
+              </>
+            ) : (
+              <>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <Card className="glass-dark border-white/10">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">
+                        Wydania Muzyczne
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold">{stats.releases}</span>
+                        <Music className="h-5 w-5 text-primary" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <Card className="glass-dark border-white/10">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Publikacje
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">{stats.publications}</span>
-                    <BookOpen className="h-5 w-5 text-secondary" />
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <Card className="glass-dark border-white/10">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">
+                        Publikacje
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold">{stats.publications}</span>
+                        <BookOpen className="h-5 w-5 text-secondary" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <Card className="glass-dark border-white/10">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Kampanie Aktywne
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">{stats.campaigns}</span>
-                    <TrendingUp className="h-5 w-5 text-accent" />
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <Card className="glass-dark border-white/10">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">
+                        Kampanie Aktywne
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold">{stats.campaigns}</span>
+                        <TrendingUp className="h-5 w-5 text-accent" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <Card className="glass-dark border-white/10">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Przychody (PLN)
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold">
-                      {stats.revenue.toFixed(2)}
-                    </span>
-                    <DollarSign className="h-5 w-5 text-primary" />
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <Card className="glass-dark border-white/10">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm font-medium text-muted-foreground">
+                        Przychody (PLN)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <span className="text-2xl font-bold">
+                          {stats.revenue.toFixed(2)}
+                        </span>
+                        <DollarSign className="h-5 w-5 text-primary" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </>
+            )}
           </div>
 
           {/* Module cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {modules.map((module, index) => (
-              <motion.div
-                key={module.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * (index + 1) }}
-              >
-                <Link to={module.link}>
-                  <Card className="glass-dark border-white/10 hover:shadow-glow transition-all duration-300 cursor-pointer group">
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <div className={`w-12 h-12 rounded-lg bg-${module.color}/20 p-2.5 group-hover:scale-110 transition-transform`}>
-                          <module.icon className={`w-full h-full text-${module.color}`} />
+            {loading ? (
+              <>
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <CardSkeleton key={i} />
+                ))}
+              </>
+            ) : (
+              modules.map((module, index) => (
+                <motion.div
+                  key={module.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * (index + 1) }}
+                >
+                  <Link to={module.link}>
+                    <Card className="glass-dark border-white/10 hover:shadow-glow transition-all duration-300 cursor-pointer group">
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className={`w-12 h-12 rounded-lg bg-${module.color}/20 p-2.5 group-hover:scale-110 transition-transform`}>
+                            <module.icon className={`w-full h-full text-${module.color}`} />
+                          </div>
+                          <span className="text-sm text-muted-foreground">
+                            {module.stats}
+                          </span>
                         </div>
-                        <span className="text-sm text-muted-foreground">
-                          {module.stats}
-                        </span>
-                      </div>
-                      <CardTitle className="mt-4">{module.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">
-                        {module.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
+                        <CardTitle className="mt-4">{module.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-sm text-muted-foreground">
+                          {module.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </motion.div>
+              ))
+            )}
           </div>
 
           {/* Quick actions */}

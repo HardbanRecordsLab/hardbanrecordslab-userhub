@@ -6,8 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { lazy, Suspense } from "react";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
+import { lazy, Suspense, useEffect } from "react";
 import { PageLoader } from "@/components/PageLoader";
+import { setupGlobalErrorHandlers } from "@/lib/errorTracking";
+import { queryClientConfig } from "@/hooks/useQueryCache";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
@@ -37,12 +40,16 @@ const Profile = lazy(() => import("./pages/Profile"));
 const Settings = lazy(() => import("./pages/Settings"));
 const MarketingDashboard = lazy(() => import("./pages/MarketingDashboard"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient(queryClientConfig);
+
+// Setup global error tracking
+setupGlobalErrorHandlers();
 
 const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <OfflineIndicator />
         <Toaster />
         <Sonner />
         <BrowserRouter>

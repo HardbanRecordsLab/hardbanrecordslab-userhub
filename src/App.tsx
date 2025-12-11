@@ -30,6 +30,8 @@ const PrometheusAutomation = lazy(() => import("./pages/PrometheusAutomation"));
 const PrometheusNewsroom = lazy(() => import("./pages/PrometheusNewsroom"));
 const PrometheusPodcasts = lazy(() => import("./pages/PrometheusPodcasts"));
 const PrometheusARVR = lazy(() => import("./pages/PrometheusARVR"));
+const PrometheusDistribution = lazy(() => import("./pages/PrometheusDistribution"));
+const PrometheusAPIs = lazy(() => import("./pages/PrometheusAPIs"));
 const ContactsManager = lazy(() => import("./pages/ContactsManager"));
 const PublicationCalendar = lazy(() => import("./pages/PublicationCalendar"));
 const AnalyticsDashboard = lazy(() => import("./pages/AnalyticsDashboard"));
@@ -191,6 +193,20 @@ const App = () => (
               <ProtectedRoute>
                 <Suspense fallback={<PageLoader />}>
                   <PrometheusARVR />
+                </Suspense>
+              </ProtectedRoute>
+            } />
+            <Route path="/prometheus-distribution" element={
+              <ProtectedRoute>
+                <Suspense fallback={<PageLoader />}>
+                  <PrometheusDistribution />
+                </Suspense>
+              </ProtectedRoute>
+            } />
+            <Route path="/prometheus-apis" element={
+              <ProtectedRoute>
+                <Suspense fallback={<PageLoader />}>
+                  <PrometheusAPIs />
                 </Suspense>
               </ProtectedRoute>
             } />

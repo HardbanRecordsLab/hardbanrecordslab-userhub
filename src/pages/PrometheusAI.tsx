@@ -30,16 +30,16 @@ const PrometheusAI = () => {
       icon: Sparkles,
       color: "from-purple-500 to-pink-500",
       tools: ["GPT-J", "Mistral", "Stable Diffusion", "Whisper", "Bark"],
-      action: () => navigate("/ai-studio")
+      action: () => navigate("/dashboard/ai-studio")
     },
     {
       id: "distribution",
-      title: "Dystrybucja treści",
-      description: "Integracje z platformami i social media",
+      title: "Dystrybucja muzyki",
+      description: "Automatyzacja dystrybucji przez RouteNote - 100% darmowa",
       icon: Share2,
       color: "from-blue-500 to-cyan-500",
-      tools: ["RSS", "Webhooks", "API", "E-mail", "Social Media"],
-      action: () => navigate("/content-generator")
+      tools: ["RouteNote", "Spotify", "Apple Music", "YouTube Music", "Deezer"],
+      action: () => navigate("/prometheus-distribution")
     },
     {
       id: "crm",
@@ -48,7 +48,7 @@ const PrometheusAI = () => {
       icon: Users,
       color: "from-green-500 to-emerald-500",
       tools: ["EspoCRM", "Mautic", "PostgreSQL", "Segmentacja"],
-      action: () => navigate("/contacts-manager")
+      action: () => navigate("/dashboard/contacts")
     },
     {
       id: "analytics",
@@ -57,7 +57,7 @@ const PrometheusAI = () => {
       icon: BarChart3,
       color: "from-orange-500 to-red-500",
       tools: ["Matomo", "Grafana", "Metabase", "ElasticSearch"],
-      action: () => navigate("/analytics-dashboard")
+      action: () => navigate("/dashboard/analytics")
     },
     {
       id: "automation",
@@ -94,6 +94,15 @@ const PrometheusAI = () => {
       color: "from-teal-500 to-blue-500",
       tools: ["Spark AR", "Blender", "Three.js", "Mozilla Hubs"],
       action: () => navigate("/prometheus-arvr")
+    },
+    {
+      id: "apis",
+      title: "Darmowe API",
+      description: "Lista 50+ darmowych API do integracji",
+      icon: Radio,
+      color: "from-emerald-500 to-green-500",
+      tools: ["Spotify API", "YouTube API", "Hugging Face", "Cloudinary"],
+      action: () => navigate("/prometheus-apis")
     }
   ];
 

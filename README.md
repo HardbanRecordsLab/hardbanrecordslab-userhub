@@ -62,7 +62,42 @@ This project is built with:
 
 ## How can I deploy this project?
 
+### Option 1: Lovable (Recommended)
 Simply open [Lovable](https://lovable.dev/projects/d1d4f173-c5f5-43be-9003-1722ad6e610e) and click on Share -> Publish.
+
+### Option 2: Vercel
+1. Export to GitHub via Lovable Settings
+2. Connect your GitHub repo to [Vercel](https://vercel.com)
+3. Add environment variables:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_PUBLISHABLE_KEY`
+4. Deploy automatically on push
+
+### Option 3: Netlify
+1. Export to GitHub via Lovable Settings
+2. Connect your GitHub repo to [Netlify](https://netlify.com)
+3. Add environment variables in Site Settings > Environment
+4. Deploy automatically on push
+
+### Environment Variables Required
+```
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+```
+
+## E2E Testing
+
+```bash
+# Install Playwright
+npm install -D @playwright/test
+npx playwright install
+
+# Run tests
+npx playwright test
+
+# Run tests with UI
+npx playwright test --ui
+```
 
 ## Can I connect a custom domain to my Lovable project?
 

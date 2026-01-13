@@ -25,6 +25,13 @@ import {
   Send
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { 
+  validateFileForUpload, 
+  generateSafeFilename,
+  MUSIC_AUDIO_ALLOWED_TYPES,
+  MUSIC_COVER_ALLOWED_TYPES,
+  MAX_FILE_SIZES 
+} from "@/lib/fileValidation";
 
 export default function MusicDashboard() {
   const { user } = useAuth();
@@ -66,8 +73,9 @@ export default function MusicDashboard() {
   };
 
   const uploadFile = async (file: File, folder: string, releaseId: string) => {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${releaseId}/${folder}/${Date.now()}.${fileExt}`;
+    // Generate safe filename
+    const safeFilename = generateSafeFilename(file.name);
+    const fileName = `${releaseId}/${folder}/${safeFilename}`;
     const filePath = `${user?.id}/${fileName}`;
 
     const { error: uploadError, data } = await supabase.storage
@@ -88,6 +96,30 @@ export default function MusicDashboard() {
     setLoading(true);
 
     try {
+      // Validate audio file if provided
+      if (audioFile) {
+        const audioValidation = await validateFileForUpload(
+          audioFile,
+          MUSIC_AUDIO_ALLOWED_TYPES,
+          MAX_FILE_SIZES.musicAudio
+        );
+        if (!audioValidation.valid) {
+          throw new Error(`Plik audio: ${audioValidation.error}`);
+        }
+      }
+
+      // Validate cover file if provided
+      if (coverFile) {
+        const coverValidation = await validateFileForUpload(
+          coverFile,
+          MUSIC_COVER_ALLOWED_TYPES,
+          MAX_FILE_SIZES.musicCover
+        );
+        if (!coverValidation.valid) {
+          throw new Error(`Okładka: ${coverValidation.error}`);
+        }
+      }
+
       // First create the release
       const { data: release, error: insertError } = await supabase
         .from("music_releases")

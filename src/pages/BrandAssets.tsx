@@ -8,6 +8,12 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Image, Plus, ArrowLeft, Loader2, Trash2, Download } from "lucide-react";
 import { motion } from "framer-motion";
+import { 
+  validateFileForUpload, 
+  generateSafeFilename,
+  BRAND_ASSET_ALLOWED_TYPES,
+  MAX_FILE_SIZES 
+} from "@/lib/fileValidation";
 
 export default function BrandAssets() {
   const { user } = useAuth();
@@ -65,9 +71,20 @@ export default function BrandAssets() {
     setUploading(true);
 
     try {
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${user.id}/${fileName}`;
+      // Validate file before upload (server-side style validation on client)
+      const validation = await validateFileForUpload(
+        file,
+        BRAND_ASSET_ALLOWED_TYPES,
+        MAX_FILE_SIZES.brandAsset
+      );
+
+      if (!validation.valid) {
+        throw new Error(validation.error || "Nieprawidłowy plik");
+      }
+
+      // Generate safe filename
+      const safeFilename = generateSafeFilename(file.name);
+      const filePath = `${user.id}/${safeFilename}`;
 
       const { error } = await supabase.storage
         .from("brand-assets")
@@ -84,7 +101,7 @@ export default function BrandAssets() {
     } catch (error: any) {
       toast({
         title: "Błąd",
-        description: error.message,
+        description: error.message || "Wystąpił błąd podczas przesyłania pliku",
         variant: "destructive",
       });
     } finally {

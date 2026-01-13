@@ -9,6 +9,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2, Music2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { z } from "zod";
+
+// Password validation schema - enforced before API call
+const passwordSchema = z.string()
+  .min(12, "Hasło musi mieć minimum 12 znaków")
+  .regex(/[a-z]/, "Hasło musi zawierać małą literę")
+  .regex(/[A-Z]/, "Hasło musi zawierać wielką literę")
+  .regex(/[0-9]/, "Hasło musi zawierać cyfrę")
+  .regex(/[@$!%*?&]/, "Hasło musi zawierać znak specjalny (@$!%*?&)");
+
+const emailSchema = z.string()
+  .email("Nieprawidłowy format email")
+  .max(255, "Email jest zbyt długi");
+
+const fullNameSchema = z.string()
+  .min(1, "Imię i nazwisko jest wymagane")
+  .max(100, "Imię i nazwisko jest zbyt długie")
+  .trim();
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
@@ -19,19 +37,39 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    setPasswordError(null);
     setLoading(true);
 
     try {
+      // Validate inputs with zod before sending to Supabase
+      const emailValidation = emailSchema.safeParse(email);
+      if (!emailValidation.success) {
+        throw new Error(emailValidation.error.errors[0].message);
+      }
+
+      const passwordValidation = passwordSchema.safeParse(password);
+      if (!passwordValidation.success) {
+        setPasswordError(passwordValidation.error.errors[0].message);
+        throw new Error(passwordValidation.error.errors[0].message);
+      }
+
+      const nameValidation = fullNameSchema.safeParse(fullName);
+      if (!nameValidation.success) {
+        throw new Error(nameValidation.error.errors[0].message);
+      }
+
       const redirectUrl = `${window.location.origin}/`;
       const { error } = await supabase.auth.signUp({
-        email,
-        password,
+        email: emailValidation.data,
+        password: passwordValidation.data,
         options: {
           emailRedirectTo: redirectUrl,
           data: {
-            full_name: fullName,
+            full_name: nameValidation.data,
           },
         },
       });
@@ -45,8 +83,8 @@ export default function AuthPage() {
 
       // Auto-login after signup (since auto-confirm is enabled)
       const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+        email: emailValidation.data,
+        password: passwordValidation.data,
       });
 
       if (!signInError) {
@@ -223,15 +261,20 @@ export default function AuthPage() {
                       type="password"
                       placeholder="••••••••"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        setPasswordError(null);
+                      }}
                       required
                       disabled={loading}
                       minLength={12}
-                      pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$"
-                      title="Hasło musi zawierać min. 12 znaków, w tym wielką literę, małą literę, cyfrę i znak specjalny"
+                      className={passwordError ? "border-destructive" : ""}
                     />
+                    {passwordError && (
+                      <p className="text-xs text-destructive">{passwordError}</p>
+                    )}
                     <p className="text-xs text-muted-foreground">
-                      Wymagane: wielka litera, mała litera, cyfra i znak specjalny
+                      Wymagane: wielka litera, mała litera, cyfra i znak specjalny (@$!%*?&)
                     </p>
                   </div>
                   <Button

@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { 
   Sparkles,
@@ -16,7 +16,9 @@ import {
   Loader2,
   ArrowLeft,
   Wand2,
-  Copy
+  Copy,
+  RefreshCw,
+  XCircle
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { z } from "zod";
@@ -37,9 +39,23 @@ export default function AIStudio() {
   const [prompt, setPrompt] = useState("");
   const [generatedContent, setGeneratedContent] = useState("");
   const [contentType, setContentType] = useState("content");
+  const [error, setError] = useState<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const cancelGeneration = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setLoading(false);
+    setError(null);
+    toast({
+      title: "Anulowano",
+      description: "Generowanie zostało anulowane",
+    });
+  };
 
   const generateContent = async () => {
-    // Validate input
     const validation = promptSchema.safeParse({ prompt, type: contentType });
     
     if (!validation.success) {
@@ -52,16 +68,30 @@ export default function AIStudio() {
     }
 
     setLoading(true);
+    setError(null);
+    
+    abortControllerRef.current = new AbortController();
+    const timeoutId = setTimeout(() => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    }, 120000);
+
     try {
       const { data, error } = await supabase.functions.invoke("ai-content", {
         body: validation.data,
       });
 
+      clearTimeout(timeoutId);
+
       if (error) throw error;
+
+      if (!data?.content) {
+        throw new Error("Brak treści w odpowiedzi. Spróbuj ponownie.");
+      }
 
       setGeneratedContent(data.content);
       
-      // Save to database
       await supabase.from("ai_content").insert({
         user_id: user?.id,
         content_type: "text",
@@ -73,17 +103,27 @@ export default function AIStudio() {
         title: "Sukces!",
         description: "Treść została wygenerowana",
       });
-    } catch (error: any) {
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+      
+      const errorMessage = err.name === 'AbortError' 
+        ? "Przekroczono limit czasu. Spróbuj ponownie z krótszym promptem."
+        : err.message || "Wystąpił błąd podczas generowania treści";
+      
+      setError(errorMessage);
+      
       if (import.meta.env.DEV) {
-        console.error("Error generating content:", error);
+        console.error("Error generating content:", err);
       }
+      
       toast({
-        title: "Błąd",
-        description: error.message || "Wystąpił błąd podczas generowania treści",
+        title: "Błąd generowania",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
       setLoading(false);
+      abortControllerRef.current = null;
     }
   };
 
@@ -177,6 +217,7 @@ export default function AIStudio() {
                         key={template.title}
                         onClick={() => setPrompt(template.prompt)}
                         className="p-3 rounded-lg glass text-left hover:bg-white/10 transition-colors group"
+                        disabled={loading}
                       >
                         <div className="flex items-center gap-2 mb-1">
                           <template.icon className="h-4 w-4 text-primary" />
@@ -199,24 +240,60 @@ export default function AIStudio() {
                   />
                 </div>
 
-                <Button
-                  onClick={generateContent}
-                  variant="gradient"
-                  className="w-full"
-                  disabled={loading || !prompt.trim()}
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Generowanie...
-                    </>
-                  ) : (
-                    <>
-                      <Wand2 className="mr-2 h-4 w-4" />
-                      Generuj Treść
-                    </>
+                {/* Action Buttons */}
+                <div className="flex gap-2">
+                  <Button
+                    onClick={generateContent}
+                    variant="gradient"
+                    className="flex-1"
+                    disabled={loading || !prompt.trim()}
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generowanie...
+                      </>
+                    ) : (
+                      <>
+                        <Wand2 className="mr-2 h-4 w-4" />
+                        Generuj Treść
+                      </>
+                    )}
+                  </Button>
+                  
+                  {loading && (
+                    <Button
+                      onClick={cancelGeneration}
+                      variant="destructive"
+                      size="icon"
+                      title="Anuluj generowanie"
+                    >
+                      <XCircle className="h-4 w-4" />
+                    </Button>
                   )}
-                </Button>
+                </div>
+
+                {/* Error State with Retry */}
+                {error && !loading && (
+                  <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+                    <div className="flex items-start gap-3">
+                      <XCircle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <p className="text-sm text-destructive font-medium">Błąd generowania</p>
+                        <p className="text-xs text-muted-foreground mt-1">{error}</p>
+                      </div>
+                    </div>
+                    <Button
+                      onClick={generateContent}
+                      variant="outline"
+                      size="sm"
+                      className="mt-3 w-full"
+                    >
+                      <RefreshCw className="mr-2 h-4 w-4" />
+                      Spróbuj ponownie
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </motion.div>
@@ -244,7 +321,13 @@ export default function AIStudio() {
                 </div>
               </CardHeader>
               <CardContent>
-                {generatedContent ? (
+                {loading ? (
+                  <div className="text-center py-12">
+                    <Loader2 className="h-12 w-12 text-primary mx-auto mb-4 animate-spin" />
+                    <p className="text-muted-foreground">Generowanie treści...</p>
+                    <p className="text-xs text-muted-foreground mt-2">To może potrwać do 2 minut</p>
+                  </div>
+                ) : generatedContent ? (
                   <div className="prose prose-invert max-w-none">
                     <div className="whitespace-pre-wrap text-sm">
                       {generatedContent}

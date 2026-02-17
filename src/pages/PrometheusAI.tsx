@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,15 +12,53 @@ import {
   Newspaper,
   Mic,
   Radio,
-  Box,
   ArrowRight,
-  Zap
+  Zap,
+  Loader2
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 const PrometheusAI = () => {
   const navigate = useNavigate();
-  const [activeModule, setActiveModule] = useState("overview");
+  const { user } = useAuth();
+  const [stats, setStats] = useState({
+    pressReleases: 0,
+    journalists: 0,
+    episodes: 0,
+    workflows: 0,
+    distributions: 0,
+    apiIntegrations: 0,
+  });
+  const [loadingStats, setLoadingStats] = useState(true);
+
+  useEffect(() => {
+    if (user) loadStats();
+  }, [user]);
+
+  const loadStats = async () => {
+    if (!user) return;
+    setLoadingStats(true);
+    const queries = [
+      supabase.from("press_releases").select("*", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("journalists").select("*", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("podcast_episodes").select("*", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("automation_workflows").select("*", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("distribution_releases").select("*", { count: "exact", head: true }).eq("user_id", user.id),
+      supabase.from("api_integrations").select("*", { count: "exact", head: true }).eq("user_id", user.id),
+    ];
+    const results = await Promise.all(queries);
+    setStats({
+      pressReleases: results[0].count || 0,
+      journalists: results[1].count || 0,
+      episodes: results[2].count || 0,
+      workflows: results[3].count || 0,
+      distributions: results[4].count || 0,
+      apiIntegrations: results[5].count || 0,
+    });
+    setLoadingStats(false);
+  };
 
   const modules = [
     {
@@ -87,15 +125,6 @@ const PrometheusAI = () => {
       action: () => navigate("/prometheus-podcasts")
     },
     {
-      id: "arvr",
-      title: "AR/VR/MR",
-      description: "Immersyjne doświadczenia i eventy",
-      icon: Box,
-      color: "from-teal-500 to-blue-500",
-      tools: ["Spark AR", "Blender", "Three.js", "Mozilla Hubs"],
-      action: () => navigate("/prometheus-arvr")
-    },
-    {
       id: "apis",
       title: "Darmowe API",
       description: "Lista 50+ darmowych API do integracji",
@@ -113,9 +142,17 @@ const PrometheusAI = () => {
     { icon: Users, text: "Wsparcie dla artystów" }
   ];
 
+  const overviewCards = [
+    { label: "Press Releases", value: stats.pressReleases, color: "text-pink-500", link: "/prometheus-newsroom" },
+    { label: "Dziennikarze", value: stats.journalists, color: "text-green-500", link: "/prometheus-newsroom" },
+    { label: "Epizody Podcastów", value: stats.episodes, color: "text-yellow-500", link: "/prometheus-podcasts" },
+    { label: "Workflow'y", value: stats.workflows, color: "text-indigo-500", link: "/prometheus-automation" },
+    { label: "Dystrybucje", value: stats.distributions, color: "text-blue-500", link: "/prometheus-distribution" },
+    { label: "Integracje API", value: stats.apiIntegrations, color: "text-emerald-500", link: "/prometheus-apis" },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      {/* Header */}
       <div className="container mx-auto px-4 py-8">
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -134,7 +171,6 @@ const PrometheusAI = () => {
             W pełni bezpłatna i open source.
           </p>
 
-          {/* Features Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 max-w-4xl mx-auto">
             {features.map((feature, index) => (
               <motion.div
@@ -151,12 +187,61 @@ const PrometheusAI = () => {
           </div>
         </motion.div>
 
-        {/* Main Content */}
-        <Tabs defaultValue="modules" className="space-y-8">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+        <Tabs defaultValue="overview" className="space-y-8">
+          <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3">
+            <TabsTrigger value="overview">Dashboard</TabsTrigger>
             <TabsTrigger value="modules">Moduły</TabsTrigger>
             <TabsTrigger value="about">O systemie</TabsTrigger>
           </TabsList>
+
+          {/* NEW: Dashboard Overview */}
+          <TabsContent value="overview" className="space-y-6">
+            <h2 className="text-2xl font-bold text-center">Przegląd Ekosystemu</h2>
+            {loadingStats ? (
+              <div className="flex justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
+                {overviewCards.map((card, i) => (
+                  <motion.div
+                    key={card.label}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="cursor-pointer"
+                    onClick={() => navigate(card.link)}
+                  >
+                    <Card className="hover:shadow-lg transition-all text-center">
+                      <CardContent className="p-4">
+                        <p className={`text-4xl font-bold ${card.color}`}>{card.value}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{card.label}</p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+
+            {/* Quick access */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto mt-8">
+              {modules.slice(0, 4).map((m, i) => (
+                <motion.div key={m.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 + i * 0.05 }}>
+                  <Card className="cursor-pointer hover:shadow-lg transition-all group" onClick={m.action}>
+                    <CardHeader className="pb-2">
+                      <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${m.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                        <m.icon className="w-5 h-5 text-white" />
+                      </div>
+                      <CardTitle className="text-base mt-2">{m.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-xs text-muted-foreground">{m.description}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </TabsContent>
 
           <TabsContent value="modules" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -182,12 +267,7 @@ const PrometheusAI = () => {
                     <CardContent>
                       <div className="flex flex-wrap gap-1">
                         {module.tools.map((tool, i) => (
-                          <span
-                            key={i}
-                            className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground"
-                          >
-                            {tool}
-                          </span>
+                          <span key={i} className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">{tool}</span>
                         ))}
                       </div>
                     </CardContent>
@@ -200,74 +280,28 @@ const PrometheusAI = () => {
           <TabsContent value="about" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Tworzenie treści AI</CardTitle>
-                </CardHeader>
+                <CardHeader><CardTitle className="text-lg">Tworzenie treści AI</CardTitle></CardHeader>
                 <CardContent className="text-sm text-muted-foreground space-y-2">
                   <p><strong>Teksty:</strong> Hugging Face Hub (GPT-J, Mistral, Falcon, LLaMA2)</p>
                   <p><strong>Obrazy:</strong> Stable Diffusion (AUTOMATIC1111, ComfyUI)</p>
                   <p><strong>Audio:</strong> Riffusion, Bark, OpenVoice</p>
                   <p><strong>Wideo:</strong> Deforum, AnimateDiff, Blender, FFmpeg</p>
-                  <p><strong>Transkrypcje:</strong> OpenAI Whisper</p>
                 </CardContent>
               </Card>
-
               <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">CRM i Marketing</CardTitle>
-                </CardHeader>
+                <CardHeader><CardTitle className="text-lg">CRM i Marketing</CardTitle></CardHeader>
                 <CardContent className="text-sm text-muted-foreground space-y-2">
                   <p><strong>CRM:</strong> EspoCRM, SuiteCRM</p>
-                  <p><strong>Bazy danych:</strong> PostgreSQL, MongoDB Community</p>
                   <p><strong>Marketing automation:</strong> Mautic (self-hosted)</p>
                   <p><strong>E-mail marketing:</strong> Mautic</p>
-                  <p><strong>EPK:</strong> WordPress, Strapi</p>
                 </CardContent>
               </Card>
-
               <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Social Media</CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm text-muted-foreground space-y-2">
-                  <p><strong>Automatyzacja:</strong> n8n, Node-RED</p>
-                  <p><strong>API otwarte:</strong> Mastodon, Bluesky, Telegram, Reddit</p>
-                  <p><strong>API darmowe:</strong> YouTube, LinkedIn</p>
-                  <p><strong>Hosting:</strong> GitHub Pages</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Analityka</CardTitle>
-                </CardHeader>
+                <CardHeader><CardTitle className="text-lg">Analityka</CardTitle></CardHeader>
                 <CardContent className="text-sm text-muted-foreground space-y-2">
                   <p><strong>Web analytics:</strong> Matomo, Umami</p>
                   <p><strong>Dashboardy:</strong> Grafana, Metabase</p>
-                  <p><strong>Monitoring:</strong> ElasticSearch, Kibana</p>
                   <p><strong>Predykcje:</strong> Prophet, River ML</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Przechowywanie</CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm text-muted-foreground space-y-2">
-                  <p><strong>Pliki:</strong> MinIO (S3), Nextcloud</p>
-                  <p><strong>Repozytoria:</strong> GitHub, GitLab</p>
-                  <p><strong>Bazy:</strong> PostgreSQL, MongoDB, Redis</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">AR/VR/MR</CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm text-muted-foreground space-y-2">
-                  <p><strong>AR Filtry:</strong> Spark AR Studio</p>
-                  <p><strong>3D modele:</strong> Blender, Three.js</p>
-                  <p><strong>Eventy wirtualne:</strong> Mozilla Hubs</p>
                 </CardContent>
               </Card>
             </div>
@@ -278,14 +312,13 @@ const PrometheusAI = () => {
               </CardHeader>
               <CardContent className="space-y-4 text-muted-foreground">
                 <p className="text-lg">
-                  Prometheus OS to kompletne rozwiązanie stworzone z myślą o artystach, muzykach, pisarzach i wydawnictwach. 
-                  System bazuje na fundamentalnej zasadzie: <strong className="text-foreground">zero kosztów, pełna niezależność</strong>.
+                  Prometheus OS to kompletne rozwiązanie dla artystów, muzyków, pisarzy i wydawnictw.
+                  System bazuje na zasadzie: <strong className="text-foreground">zero kosztów, pełna niezależność</strong>.
                 </p>
                 <ul className="space-y-2 list-disc list-inside">
                   <li>Zero kosztów licencyjnych i subskrypcji</li>
                   <li>Pełen zestaw narzędzi open source i free tier</li>
                   <li>Niezależność od płatnych API i platform zamkniętych</li>
-                  <li>Wsparcie dla twórców w całkowicie bezkosztowym modelu</li>
                 </ul>
               </CardContent>
             </Card>

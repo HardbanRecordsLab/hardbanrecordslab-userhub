@@ -9,9 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Newspaper, Send, Users, Rss, FileText, Plus, Trash2, Edit, Eye, Download, Search, Filter, Star, Mail, Globe, Linkedin, Twitter } from "lucide-react";
+import { Newspaper, Send, Users, Rss, FileText, Plus, Trash2, Edit, Eye, Download, Search, Filter, Star, Mail, Globe, Linkedin, Twitter, Sparkles, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PressRelease {
   id: string;
@@ -119,6 +120,7 @@ const PrometheusNewsroom = () => {
   const [isSendDialogOpen, setIsSendDialogOpen] = useState(false);
   const [selectedRelease, setSelectedRelease] = useState<PressRelease | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
 
   const [newRelease, setNewRelease] = useState({
     title: "",
@@ -134,6 +136,39 @@ const PrometheusNewsroom = () => {
   });
 
   const categories = ["Muzyka", "Koncerty", "Partnerstwa", "Wydawnictwo", "Inne"];
+
+  const generatePressReleaseAI = async () => {
+    if (!newRelease.title) {
+      toast({ title: "Podaj tytuł, aby wygenerować treść", variant: "destructive" });
+      return;
+    }
+    setIsGeneratingAI(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-content", {
+        body: {
+          prompt: `Napisz profesjonalny komunikat prasowy na temat: "${newRelease.title}".
+${newRelease.category ? `Kategoria: ${newRelease.category}.` : ""}
+
+Komunikat powinien zawierać:
+1. Nagłówek i lead (kto, co, kiedy, gdzie, dlaczego)
+2. Cytaty osób odpowiedzialnych
+3. Kontekst i tło
+4. Informacje o firmie/artyście
+5. Dane kontaktowe (placeholder)
+
+Format: profesjonalny komunikat prasowy, 300-500 słów, po polsku.`,
+          type: "content"
+        }
+      });
+      if (error) throw error;
+      setNewRelease(prev => ({ ...prev, content: data.content }));
+      toast({ title: "Treść wygenerowana przez AI!", description: "Możesz ją teraz edytować" });
+    } catch (error: any) {
+      toast({ title: "Błąd generowania", description: error.message || "Spróbuj ponownie", variant: "destructive" });
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
 
   const createRelease = () => {
     if (!newRelease.title || !newRelease.content) {
@@ -376,7 +411,11 @@ const PrometheusNewsroom = () => {
                       />
                     </div>
                   </div>
-                  <DialogFooter>
+                  <DialogFooter className="flex-col sm:flex-row gap-2">
+                    <Button variant="outline" onClick={generatePressReleaseAI} disabled={isGeneratingAI} className="sm:mr-auto">
+                      {isGeneratingAI ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                      {isGeneratingAI ? "Generowanie..." : "Generuj AI"}
+                    </Button>
                     <Button variant="outline" onClick={() => setIsReleaseDialogOpen(false)}>Anuluj</Button>
                     <Button onClick={createRelease}>Zapisz szkic</Button>
                   </DialogFooter>

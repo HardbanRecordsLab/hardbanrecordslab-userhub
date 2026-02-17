@@ -90,6 +90,109 @@ export type Database = {
           },
         ]
       }
+      api_integrations: {
+        Row: {
+          api_category: string
+          api_key_stored: boolean | null
+          api_name: string
+          config: Json | null
+          created_at: string | null
+          id: string
+          is_connected: boolean | null
+          last_used_at: string | null
+          updated_at: string | null
+          usage_count: number | null
+          user_id: string
+        }
+        Insert: {
+          api_category: string
+          api_key_stored?: boolean | null
+          api_name: string
+          config?: Json | null
+          created_at?: string | null
+          id?: string
+          is_connected?: boolean | null
+          last_used_at?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+          user_id: string
+        }
+        Update: {
+          api_category?: string
+          api_key_stored?: boolean | null
+          api_name?: string
+          config?: Json | null
+          created_at?: string | null
+          id?: string
+          is_connected?: boolean | null
+          last_used_at?: string | null
+          updated_at?: string | null
+          usage_count?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_integrations_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automation_workflows: {
+        Row: {
+          actions: Json | null
+          created_at: string | null
+          description: string | null
+          executions_count: number | null
+          id: string
+          last_run_at: string | null
+          name: string
+          status: string
+          success_rate: number | null
+          triggers: Json | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          actions?: Json | null
+          created_at?: string | null
+          description?: string | null
+          executions_count?: number | null
+          id?: string
+          last_run_at?: string | null
+          name: string
+          status?: string
+          success_rate?: number | null
+          triggers?: Json | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          actions?: Json | null
+          created_at?: string | null
+          description?: string | null
+          executions_count?: number | null
+          id?: string
+          last_run_at?: string | null
+          name?: string
+          status?: string
+          success_rate?: number | null
+          triggers?: Json | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_workflows_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contacts: {
         Row: {
           audience_size: number | null
@@ -304,6 +407,125 @@ export type Database = {
           },
         ]
       }
+      distribution_releases: {
+        Row: {
+          artist_name: string
+          created_at: string | null
+          genre: string | null
+          id: string
+          music_release_id: string | null
+          platforms: Json | null
+          release_date: string | null
+          revenue: number | null
+          routenote_package_url: string | null
+          status: string
+          streams_count: number | null
+          submitted_at: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          artist_name: string
+          created_at?: string | null
+          genre?: string | null
+          id?: string
+          music_release_id?: string | null
+          platforms?: Json | null
+          release_date?: string | null
+          revenue?: number | null
+          routenote_package_url?: string | null
+          status?: string
+          streams_count?: number | null
+          submitted_at?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          artist_name?: string
+          created_at?: string | null
+          genre?: string | null
+          id?: string
+          music_release_id?: string | null
+          platforms?: Json | null
+          release_date?: string | null
+          revenue?: number | null
+          routenote_package_url?: string | null
+          status?: string
+          streams_count?: number | null
+          submitted_at?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "distribution_releases_music_release_id_fkey"
+            columns: ["music_release_id"]
+            isOneToOne: false
+            referencedRelation: "music_releases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "distribution_releases_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      journalists: {
+        Row: {
+          created_at: string | null
+          email: string
+          engagement_level: string | null
+          id: string
+          last_contacted_at: string | null
+          name: string
+          notes: string | null
+          outlet: string | null
+          topics: string[] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          engagement_level?: string | null
+          id?: string
+          last_contacted_at?: string | null
+          name: string
+          notes?: string | null
+          outlet?: string | null
+          topics?: string[] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          engagement_level?: string | null
+          id?: string
+          last_contacted_at?: string | null
+          name?: string
+          notes?: string | null
+          outlet?: string | null
+          topics?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journalists_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       marketing_campaigns: {
         Row: {
           ai_suggestions: Json | null
@@ -457,6 +679,115 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "music_releases_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      podcast_episodes: {
+        Row: {
+          audio_url: string | null
+          created_at: string | null
+          description: string | null
+          downloads: number | null
+          duration: string | null
+          id: string
+          metadata: Json | null
+          platform: string | null
+          publish_date: string | null
+          status: string
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          downloads?: number | null
+          duration?: string | null
+          id?: string
+          metadata?: Json | null
+          platform?: string | null
+          publish_date?: string | null
+          status?: string
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          downloads?: number | null
+          duration?: string | null
+          id?: string
+          metadata?: Json | null
+          platform?: string | null
+          publish_date?: string | null
+          status?: string
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "podcast_episodes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      press_releases: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          opens_count: number | null
+          published_at: string | null
+          recipients_count: number | null
+          scheduled_at: string | null
+          status: string
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          opens_count?: number | null
+          published_at?: string | null
+          recipients_count?: number | null
+          scheduled_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          opens_count?: number | null
+          published_at?: string | null
+          recipients_count?: number | null
+          scheduled_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "press_releases_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"

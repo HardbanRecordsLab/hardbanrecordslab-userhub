@@ -35,25 +35,50 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
 // RouteNote supported platforms
+// Pełna lista platform RouteNote (oficjalna)
 const DISTRIBUTION_PLATFORMS = [
-  { id: "spotify", name: "Spotify", icon: "🎵", active: true },
-  { id: "apple_music", name: "Apple Music", icon: "🍎", active: true },
-  { id: "youtube_music", name: "YouTube Music", icon: "▶️", active: true },
-  { id: "amazon_music", name: "Amazon Music", icon: "📦", active: true },
-  { id: "deezer", name: "Deezer", icon: "🎧", active: true },
-  { id: "tidal", name: "Tidal", icon: "🌊", active: true },
-  { id: "pandora", name: "Pandora", icon: "📻", active: true },
-  { id: "soundcloud", name: "SoundCloud", icon: "☁️", active: true },
-  { id: "tiktok", name: "TikTok / CapCut", icon: "🎬", active: true },
-  { id: "instagram", name: "Instagram / Facebook", icon: "📷", active: true },
-  { id: "beatport", name: "Beatport", icon: "🎚️", active: true },
-  { id: "traxsource", name: "Traxsource", icon: "🎹", active: true },
-  { id: "audiomack", name: "Audiomack", icon: "🎤", active: true },
-  { id: "anghami", name: "Anghami", icon: "🌍", active: true },
-  { id: "boomplay", name: "Boomplay", icon: "🌍", active: true },
-  { id: "jiosaavn", name: "JioSaavn", icon: "🇮🇳", active: true },
-  { id: "netease", name: "NetEase", icon: "🇨🇳", active: true },
-  { id: "qq_music", name: "QQ Music", icon: "🇨🇳", active: true },
+  // Streaming
+  { id: "spotify", name: "Spotify", icon: "🎵", category: "streaming" },
+  { id: "apple_music", name: "Apple Music", icon: "🍎", category: "streaming" },
+  { id: "youtube_music", name: "YouTube Music", icon: "▶️", category: "streaming" },
+  { id: "amazon_music", name: "Amazon Music", icon: "📦", category: "streaming" },
+  { id: "deezer", name: "Deezer", icon: "🎧", category: "streaming" },
+  { id: "tidal", name: "TIDAL", icon: "🌊", category: "streaming" },
+  { id: "pandora", name: "Pandora", icon: "📻", category: "streaming" },
+  { id: "soundcloud", name: "SoundCloud", icon: "☁️", category: "streaming" },
+  { id: "anghami", name: "Anghami", icon: "🌍", category: "streaming" },
+  { id: "boomplay", name: "Boomplay", icon: "🌍", category: "streaming" },
+  { id: "jiosaavn", name: "JioSaavn", icon: "🇮🇳", category: "streaming" },
+  { id: "napster", name: "Napster", icon: "🎶", category: "streaming" },
+  { id: "iheartradio", name: "iHeartRadio", icon: "📻", category: "streaming" },
+  { id: "melon", name: "Melon", icon: "🇰🇷", category: "streaming" },
+  { id: "bugs", name: "Bugs!", icon: "🇰🇷", category: "streaming" },
+  { id: "flo", name: "FLO", icon: "🇰🇷", category: "streaming" },
+  { id: "genie", name: "Genie", icon: "🇰🇷", category: "streaming" },
+  { id: "kkbox", name: "KKBOX", icon: "🎵", category: "streaming" },
+  { id: "joox", name: "Joox", icon: "🎵", category: "streaming" },
+  { id: "line_music", name: "Line Music", icon: "🇯🇵", category: "streaming" },
+  { id: "awa", name: "AWA", icon: "🇯🇵", category: "streaming" },
+  { id: "netease", name: "NetEase", icon: "🇨🇳", category: "streaming" },
+  { id: "tencent", name: "Tencent / QQ Music", icon: "🇨🇳", category: "streaming" },
+  { id: "kanjian", name: "Kanjian", icon: "🇨🇳", category: "streaming" },
+  { id: "yg", name: "YG", icon: "🇰🇷", category: "streaming" },
+  { id: "claro_musica", name: "Claro Música", icon: "🌎", category: "streaming" },
+  { id: "kuack", name: "Kuack", icon: "🌎", category: "streaming" },
+  { id: "zing_mp3", name: "Zing MP3", icon: "🇻🇳", category: "streaming" },
+  { id: "nuuday", name: "Nuuday", icon: "🇩🇰", category: "streaming" },
+  { id: "allsaints", name: "AllSaints", icon: "🎵", category: "streaming" },
+  { id: "tuned_global", name: "Tuned Global", icon: "🌍", category: "streaming" },
+  // Downloads
+  { id: "itunes", name: "iTunes", icon: "🍎", category: "downloads" },
+  { id: "qobuz", name: "Qobuz", icon: "🎵", category: "downloads" },
+  // Content Recognition
+  { id: "tiktok", name: "TikTok", icon: "🎬", category: "social" },
+  { id: "capcut", name: "CapCut", icon: "✂️", category: "social" },
+  { id: "instagram", name: "Instagram", icon: "📷", category: "social" },
+  { id: "facebook", name: "Facebook", icon: "📘", category: "social" },
+  { id: "youtube_content_id", name: "YouTube Content ID", icon: "🔒", category: "social" },
+  { id: "youtube_shorts", name: "YouTube Shorts", icon: "📱", category: "social" },
 ];
 
 // Internal workflow steps for RouteNote process
@@ -247,7 +272,7 @@ Keep 85% of royalties (RouteNote takes 15%).
                       <CheckCircle2 className="w-3 h-3 mr-1" /> 0 PLN za upload
                     </Badge>
                     <Badge variant="outline" className="text-blue-600 border-blue-600">
-                      <Headphones className="w-3 h-3 mr-1" /> 18+ platform
+                      <Headphones className="w-3 h-3 mr-1" /> 38+ platform
                     </Badge>
                     <Badge variant="outline" className="text-purple-600 border-purple-600">
                       <Zap className="w-3 h-3 mr-1" /> 85% royalties
@@ -542,7 +567,7 @@ Keep 85% of royalties (RouteNote takes 15%).
               <CardHeader>
                 <CardTitle>Wybierz platformy dystrybucji</CardTitle>
                 <CardDescription>
-                  RouteNote obsługuje ponad 18 platform streamingowych na całym świecie
+                  RouteNote obsługuje ponad 38 platform streamingowych, downloadowych i social media na całym świecie
                 </CardDescription>
               </CardHeader>
               <CardContent>

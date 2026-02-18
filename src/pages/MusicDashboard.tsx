@@ -296,7 +296,7 @@ export default function MusicDashboard() {
             <div>
               <h1 className="text-3xl font-bold mb-2">Dystrybucja Muzyki</h1>
               <p className="text-muted-foreground">
-                Zarządzaj swoimi wydaniami i publikuj na 200+ platformach
+                Zarządzaj swoimi wydaniami i publikuj na 38+ platformach via RouteNote
               </p>
             </div>
             <Button

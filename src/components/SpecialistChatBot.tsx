@@ -19,7 +19,7 @@ const predefinedResponses = {
   hello: "Cześć! Jestem asystentem Hardban Records. Jak mogę Ci pomóc? 🎵",
   pricing: "Oferujemy elastyczne plany cenowe dostosowane do Twoich potrzeb. Plan Basic to 99 PLN/miesiąc, Pro to 299 PLN/miesiąc, a Enterprise jest dostępny na indywidualnych warunkach. Chcesz dowiedzieć się więcej o konkretnym planie?",
   demo: "Z chęcią umówię dla Ciebie demo! Proszę podaj swój email, a nasz specjalista skontaktuje się z Tobą w ciągu 24 godzin. Możesz też od razu napisać na: kontakt@hardbanrecords.com",
-  music: "Nasz Moduł Muzyczny pozwala na dystrybucję na 200+ platformach streamingowych, automatyczne generowanie kodów ISRC/UPC, zarządzanie prawami i split sheets. Chcesz dowiedzieć się więcej?",
+  music: "Nasz Moduł Muzyczny pozwala na dystrybucję na 38+ platformach streamingowych (via RouteNote), automatyczne generowanie kodów ISRC/UPC, zarządzanie prawami i split sheets. Chcesz dowiedzieć się więcej?",
   publishing: "Moduł Publikacji umożliwia publikację e-booków i audiobooków na Amazon, Apple Books, Google Play i innych platformach. Mamy również generator audiobooków AI w 40+ językach!",
   marketing: "Moduł Marketingu oferuje AI-powered strategie, smart links, automatyzację PR i social media scheduling. Wszystko w jednym miejscu!",
   ai: "AI Creative Studio to Twoje centrum kreatywne - generowanie treści, grafik, muzyki i profesjonalny mastering audio. Wszystko napędzane najnowszymi modelami AI!",

@@ -43,7 +43,7 @@ export function DemoModal({ open, onOpenChange }: DemoModalProps) {
                 <Music className="w-16 h-16 mx-auto mb-4 text-primary" />
                 <h3 className="text-2xl font-bold mb-2">Moduł Muzyczny</h3>
                 <p className="text-muted-foreground">
-                  Dystrybuuj muzykę na 200+ platformach streamingowych
+                  Dystrybuuj muzykę na 38+ platformach streamingowych via RouteNote
                 </p>
               </div>
             </div>

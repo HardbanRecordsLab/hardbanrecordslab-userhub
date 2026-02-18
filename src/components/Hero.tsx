@@ -76,7 +76,7 @@ export function Hero() {
             {[
               "✓ Bez karty kredytowej",
               "✓ 30 dni za darmo",
-              "✓ 90% przychodów dla Ciebie"
+              "✓ 85% przychodów dla Ciebie"
             ].map((item, i) => (
               <span key={i} className="text-muted-foreground">{item}</span>
             ))}
@@ -117,8 +117,8 @@ export function Hero() {
             className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 max-w-3xl mx-auto"
           >
             {[
-              { value: "200+", label: "Platform Streamingowych" },
-              { value: "90%", label: "Podział Przychodów" },
+              { value: "38+", label: "Platform Streamingowych" },
+              { value: "85%", label: "Podział Przychodów" },
               { value: "24/7", label: "AI Marketing" },
               { value: "∞", label: "Możliwości" },
             ].map((stat, index) => (

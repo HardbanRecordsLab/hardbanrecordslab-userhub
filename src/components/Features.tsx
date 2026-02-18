@@ -5,7 +5,7 @@ const features = [
   {
     icon: Music,
     title: "Dystrybucja Muzyki",
-    description: "Publikuj na 200+ platformach streamingowych jednym kliknięciem",
+    description: "Publikuj na 38+ platformach streamingowych jednym kliknięciem (via RouteNote)",
     gradient: "from-purple-500 to-blue-500",
   },
   {

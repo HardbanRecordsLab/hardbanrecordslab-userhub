@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Music2 } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
+import logoColor from "@/assets/logo-color.png";
 
 const navItems = [
   { label: "Funkcje", href: "#features" },
@@ -30,8 +31,8 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "glass-dark backdrop-blur-xl border-b border-white/10" : ""
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled ? "glass-dark shadow-soft" : ""
       }`}
     >
       <div className="container mx-auto px-4">
@@ -42,12 +43,7 @@ export function Header() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3"
           >
-            <div className="w-10 h-10 rounded-lg bg-gradient-primary p-2">
-              <Music2 className="w-full h-full text-white" />
-            </div>
-            <span className="text-xl font-bold">
-              HardbanRecords<span className="gradient-text">Lab</span>
-            </span>
+            <img src={logoColor} alt="HardbanRecords Lab" className="h-12 w-auto" />
           </motion.div>
 
           {/* Desktop Navigation */}
@@ -59,7 +55,7 @@ export function Header() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="text-sm font-medium hover:text-primary transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all after:duration-300 hover:after:w-full"
               >
                 {item.label}
               </motion.a>
@@ -84,12 +80,14 @@ export function Header() {
                 <Button 
                   variant="ghost"
                   onClick={() => navigate("/auth")}
+                  className="text-muted-foreground hover:text-foreground"
                 >
                   Zaloguj
                 </Button>
                 <Button 
                   variant="gradient"
                   onClick={() => navigate("/auth")}
+                  className="animate-glow-pulse"
                 >
                   Rozpocznij
                 </Button>
@@ -100,7 +98,7 @@ export function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden p-2 hover:bg-white/10 rounded-lg transition-colors"
+            className="lg:hidden p-2 hover:bg-muted rounded-lg transition-colors"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -114,7 +112,7 @@ export function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden glass-dark border-t border-white/10"
+            className="lg:hidden glass-dark border-t border-border"
           >
             <nav className="container mx-auto px-4 py-6">
               <div className="flex flex-col gap-4">
@@ -128,7 +126,7 @@ export function Header() {
                     {item.label}
                   </a>
                 ))}
-                <div className="flex flex-col gap-2 pt-4 border-t border-white/10">
+                <div className="flex flex-col gap-2 pt-4 border-t border-border">
                   {session ? (
                     <Button 
                       variant="gradient" 

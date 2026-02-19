@@ -1,5 +1,6 @@
-import { Music2, Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Youtube } from "lucide-react";
 import { Link } from "react-router-dom";
+import logoColor from "@/assets/logo-color.png";
 
 const footerLinks = {
   Produkt: [
@@ -42,18 +43,13 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="py-16 border-t border-white/10">
+    <footer className="py-16 border-t border-border">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-primary p-2">
-                <Music2 className="w-full h-full text-white" />
-              </div>
-              <span className="text-xl font-bold">
-                HardbanRecords<span className="gradient-text">Lab</span>
-              </span>
+              <img src={logoColor} alt="HardbanRecords Lab" className="h-10 w-auto" />
             </div>
             <p className="text-muted-foreground mb-6 max-w-sm">
               Rewolucyjna platforma SaaS dla niezależnych twórców. Jedna platforma, pełna kontrola.
@@ -66,7 +62,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="w-10 h-10 rounded-lg glass flex items-center justify-center hover:bg-white/10 transition-colors"
+                  className="w-10 h-10 rounded-lg glass flex items-center justify-center hover:bg-primary/10 hover:text-primary transition-all duration-300"
                 >
                   <social.icon className="w-5 h-5" />
                 </a>
@@ -77,7 +73,7 @@ export function Footer() {
           {/* Links */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h3 className="font-semibold mb-4">{category}</h3>
+              <h3 className="font-semibold mb-4 text-foreground">{category}</h3>
               <ul className="space-y-2">
                 {links.map((link) => (
                   <li key={link.label}>
@@ -110,7 +106,7 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="pt-8 border-t border-white/10">
+        <div className="pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
               © 2025 HardbanRecords Lab. Wszystkie prawa zastrzeżone.

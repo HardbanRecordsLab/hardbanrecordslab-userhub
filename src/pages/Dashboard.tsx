@@ -34,6 +34,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import logoColor from "@/assets/logo-color.png";
+import { NotificationCenter } from "@/components/NotificationCenter";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -191,6 +192,9 @@ export default function Dashboard() {
           <div className="flex items-center gap-2">
             <LayoutDashboard className="h-5 w-5 text-primary" />
             <h1 className="text-lg font-semibold" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Panel Główny</h1>
+          </div>
+          <div className="ml-auto">
+            <NotificationCenter />
           </div>
         </header>
 

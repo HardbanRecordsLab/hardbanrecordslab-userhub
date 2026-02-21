@@ -31,6 +31,7 @@ const PrometheusNewsroom = lazy(() => import("./pages/PrometheusNewsroom"));
 const PrometheusPodcasts = lazy(() => import("./pages/PrometheusPodcasts"));
 
 const PrometheusDistribution = lazy(() => import("./pages/PrometheusDistribution"));
+const PitchDeck = lazy(() => import("./pages/PitchDeck"));
 const PrometheusAPIs = lazy(() => import("./pages/PrometheusAPIs"));
 const ContactsManager = lazy(() => import("./pages/ContactsManager"));
 const PublicationCalendar = lazy(() => import("./pages/PublicationCalendar"));
@@ -209,6 +210,11 @@ const App = () => (
                   <ComprehensiveReport />
                 </Suspense>
               </ProtectedRoute>
+            } />
+            <Route path="/pitch-deck" element={
+              <Suspense fallback={<PageLoader />}>
+                <PitchDeck />
+              </Suspense>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

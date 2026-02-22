@@ -42,6 +42,7 @@ const ComprehensiveReport = lazy(() => import("./pages/ComprehensiveReport"));
 const Profile = lazy(() => import("./pages/Profile"));
 const Settings = lazy(() => import("./pages/Settings"));
 const MarketingDashboard = lazy(() => import("./pages/MarketingDashboard"));
+const ArtistProfile = lazy(() => import("./pages/ArtistProfile"));
 
 const queryClient = new QueryClient(queryClientConfig);
 
@@ -64,6 +65,11 @@ const App = () => (
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/artist/:username" element={
+              <Suspense fallback={<PageLoader />}>
+                <ArtistProfile />
+              </Suspense>
+            } />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Suspense fallback={<PageLoader />}>

@@ -4,58 +4,29 @@ import { Check, Sparkles, Crown, Building } from "lucide-react";
 
 const plans = [
   {
-    name: "Starter",
+    name: "HRL Partner",
     price: "0",
-    description: "Dla początkujących twórców",
-    icon: Sparkles,
-    features: [
-      "3 wydania miesięcznie",
-      "Podstawowa analityka",
-      "Podział przychodów 85/15",
-      "Wsparcie email",
-      "1 artysta",
-    ],
-    buttonText: "Zacznij za darmo",
-    variant: "outline" as const,
-    popular: false,
-  },
-  {
-    name: "Artist",
-    price: "19",
-    description: "Dla profesjonalnych twórców",
+    description: "Pełen dostęp po podpisaniu umowy partnerskiej (2 lata)",
     icon: Crown,
     features: [
       "Nielimitowane wydania",
-      "Zaawansowana analityka",
-      "Podział przychodów 90/10",
+      "Pełna analityka & raporty",
+      "Podział przychodów 85/15",
       "AI Marketing Suite",
-      "Smart links",
-      "Priorytetowe wsparcie",
+      "AI Studio & Content Generator",
+      "Smart links & dystrybucja",
+      "Prometheus Automation",
+      "Newsroom & PR tools",
+      "Podcast Manager",
+      "Dedykowany opiekun",
+      "API dostęp",
+      "Umowa partnerska na 2 lata",
     ],
-    buttonText: "Wybierz Artist",
+    buttonText: "Podpisz umowę partnerską",
     variant: "gradient" as const,
     popular: true,
   },
-  {
-    name: "Label",
-    price: "99",
-    description: "Dla wytwórni i agencji",
-    icon: Building,
-    features: [
-      "Wielu artystów",
-      "White-label opcje",
-      "Podział przychodów 92/8",
-      "Pełny dostęp do AI",
-      "API dostęp",
-      "Dedykowany opiekun",
-      "Niestandardowe raporty",
-    ],
-    buttonText: "Wybierz Label",
-    variant: "glow" as const,
-    popular: false,
-  },
 ];
-
 export function Pricing() {
   return (
     <section className="py-24 relative">
@@ -75,7 +46,7 @@ export function Pricing() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 gap-8 max-w-xl mx-auto">
           {plans.map((plan, index) => (
             <motion.div
               key={index}

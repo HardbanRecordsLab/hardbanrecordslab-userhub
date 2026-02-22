@@ -2,11 +2,13 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Headphones, BookText, Megaphone, Brain } from "lucide-react";
 import { ModuleHoverCard } from "./ModuleHoverCard";
+import { Link } from "react-router-dom";
 
 const modules = [
   {
     icon: Headphones,
     title: "Moduł Muzyczny",
+    slug: "muzyczny",
     subtitle: "Dla Artystów i Wytwórni",
     description: "Kompletna dystrybucja muzyki z automatycznym zarządzaniem metadanych, kodami ISRC/UPC i podziałem tantiem.",
     features: [
@@ -37,6 +39,7 @@ const modules = [
   {
     icon: BookText,
     title: "Moduł Publikacji",
+    slug: "publikacji",
     subtitle: "Dla Autorów i Wydawców",
     description: "Publikuj e-booki i audiobooki w globalnych księgarniach. Generuj audiobooki z AI i zarządzaj ISBN.",
     features: [
@@ -67,6 +70,7 @@ const modules = [
   {
     icon: Megaphone,
     title: "Moduł Marketingu",
+    slug: "marketingu",
     subtitle: "Promocja z AI",
     description: "Inteligentne kampanie marketingowe napędzane przez AI. Od strategii po automatyczne targetowanie.",
     features: [
@@ -97,6 +101,7 @@ const modules = [
   {
     icon: Brain,
     title: "AI Creative Studio",
+    slug: "ai-studio",
     subtitle: "Narzędzia Kreatywne",
     description: "Generuj treści, grafiki, muzykę i wideo. Twój kreatywny partner AI dostępny 24/7.",
     features: [
@@ -178,14 +183,15 @@ export function Modules() {
                       description={module.description}
                       detailedInfo={module.detailedInfo}
                     >
-                      <Button 
-                        variant="glow" 
-                        className="group/btn"
-                        onClick={() => window.location.href = "#contact"}
-                      >
-                        Dowiedz się więcej
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                      </Button>
+                      <Link to={`/modules/${module.slug}`}>
+                        <Button 
+                          variant="glow" 
+                          className="group/btn"
+                        >
+                          Dowiedz się więcej
+                          <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                        </Button>
+                      </Link>
                     </ModuleHoverCard>
                   </div>
                 </div>

@@ -43,6 +43,7 @@ const Profile = lazy(() => import("./pages/Profile"));
 const Settings = lazy(() => import("./pages/Settings"));
 const MarketingDashboard = lazy(() => import("./pages/MarketingDashboard"));
 const ArtistProfile = lazy(() => import("./pages/ArtistProfile"));
+const ModuleDetail = lazy(() => import("./pages/ModuleDetail"));
 
 const queryClient = new QueryClient(queryClientConfig);
 
@@ -68,6 +69,11 @@ const App = () => (
             <Route path="/artist/:username" element={
               <Suspense fallback={<PageLoader />}>
                 <ArtistProfile />
+              </Suspense>
+            } />
+            <Route path="/modules/:slug" element={
+              <Suspense fallback={<PageLoader />}>
+                <ModuleDetail />
               </Suspense>
             } />
             <Route path="/dashboard" element={

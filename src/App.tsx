@@ -58,10 +58,10 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <OfflineIndicator />
-        <CommandPalette />
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <CommandPalette />
           <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />

@@ -195,7 +195,8 @@ export default function Dashboard() {
             <LayoutDashboard className="h-5 w-5 text-primary" />
             <h1 className="text-lg font-semibold" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Panel Główny</h1>
           </div>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
             <NotificationCenter />
           </div>
         </header>

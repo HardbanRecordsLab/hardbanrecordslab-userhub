@@ -35,16 +35,6 @@ export function Hero() {
           className="text-center max-w-5xl mx-auto"
           style={{ perspective: '1200px' }}
         >
-          {/* Logo */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, rotateX: 15 }}
-            animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-            transition={{ delay: 0.1, duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-            className="mb-8 flex justify-center"
-          >
-            <img src={logoColor} alt="HardbanRecords Lab" className="h-16 md:h-20 w-auto object-contain" style={{ filter: 'drop-shadow(0 0 30px hsl(38 65% 50% / 0.3))' }} />
-          </motion.div>
-
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}

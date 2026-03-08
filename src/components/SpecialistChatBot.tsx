@@ -23,7 +23,7 @@ const predefinedResponses = {
   publishing: "Moduł Publikacji umożliwia publikację e-booków i audiobooków na Amazon, Apple Books, Google Play i innych platformach. Mamy również generator audiobooków AI w 40+ językach!",
   marketing: "Moduł Marketingu oferuje AI-powered strategie, smart links, automatyzację PR i social media scheduling. Wszystko w jednym miejscu!",
   ai: "AI Creative Studio to Twoje centrum kreatywne - generowanie treści, grafik, muzyki i profesjonalny mastering audio. Wszystko napędzane najnowszymi modelami AI!",
-  default: "Dziękuję za wiadomość! Jeśli chcesz porozmawiać z naszym specjalistą, napisz do nas na kontakt@hardbanrecords.com lub zadzwoń pod numer widoczny na stronie. Czekamy na kontakt! 😊"
+  default: "Dziękuję za wiadomość! Jeśli chcesz porozmawiać z naszym specjalistą, napisz do nas na contact@hardbanrecordslab.online lub odwiedź hardbanrecordslab.online. Czekamy na kontakt! 😊"
 };
 
 export function SpecialistChatBot({ open, onOpenChange }: SpecialistChatBotProps) {

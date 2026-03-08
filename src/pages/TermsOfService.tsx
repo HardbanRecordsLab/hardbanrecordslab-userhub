@@ -121,9 +121,9 @@ const TermsOfService = () => {
 
                 <h2>11. Kontakt</h2>
                 <p>
-                  W przypadku pytań dotyczących Regulaminu:<br />
-                  Email: kontakt@hardbanrecords.com<br />
-                  Telefon: +48 123 456 789
+                   W przypadku pytań dotyczących Regulaminu:<br />
+                   Email: contact@hardbanrecordslab.online<br />
+                   Strona: hardbanrecordslab.online
                 </p>
 
                 <h2>12. Postanowienia końcowe</h2>

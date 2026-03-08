@@ -34,11 +34,11 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com/hardbanrecords", label: "Facebook" },
-  { icon: Twitter, href: "https://twitter.com/hardbanrecords", label: "Twitter" },
-  { icon: Instagram, href: "https://instagram.com/hardbanrecords", label: "Instagram" },
-  { icon: Linkedin, href: "https://linkedin.com/company/hardbanrecords", label: "LinkedIn" },
-  { icon: Youtube, href: "https://youtube.com/@hardbanrecords", label: "YouTube" },
+  { icon: Facebook, href: "https://facebook.com/hardbanrecordslab", label: "Facebook" },
+  { icon: Twitter, href: "https://twitter.com/hardbanrecordslab", label: "Twitter" },
+  { icon: Instagram, href: "https://instagram.com/hardbanrecordslab", label: "Instagram" },
+  { icon: Linkedin, href: "https://linkedin.com/company/hardbanrecordslab", label: "LinkedIn" },
+  { icon: Youtube, href: "https://youtube.com/@hardbanrecordslab", label: "YouTube" },
 ];
 
 export function Footer() {

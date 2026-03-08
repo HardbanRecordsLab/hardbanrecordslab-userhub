@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -6,55 +6,106 @@ import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Settings as SettingsIcon, Bell, Shield, Globe, Palette, ArrowLeft, Save, LogOut } from "lucide-react";
+import { Settings as SettingsIcon, Bell, Shield, Globe, Palette, ArrowLeft, Save, LogOut, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+
+const defaultSettings = {
+  notifications: {
+    email: true,
+    push: true,
+    marketing: false,
+    releases: true,
+    analytics: true
+  },
+  privacy: {
+    profilePublic: true,
+    showStats: false,
+    allowMessages: true
+  },
+  preferences: {
+    language: "pl",
+    timezone: "Europe/Warsaw",
+    theme: "dark",
+    currency: "PLN"
+  }
+};
 
 const Settings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [loadingSettings, setLoadingSettings] = useState(true);
   
-  const [settings, setSettings] = useState({
-    notifications: {
-      email: true,
-      push: true,
-      marketing: false,
-      releases: true,
-      analytics: true
-    },
-    privacy: {
-      profilePublic: true,
-      showStats: false,
-      allowMessages: true
-    },
-    preferences: {
-      language: "pl",
-      timezone: "Europe/Warsaw",
-      theme: "dark",
-      currency: "PLN"
+  const [settings, setSettings] = useState(defaultSettings);
+
+  useEffect(() => {
+    if (user) loadSettings();
+  }, [user]);
+
+  const loadSettings = async () => {
+    if (!user) return;
+    setLoadingSettings(true);
+    try {
+      const { data, error } = await supabase
+        .from("user_settings")
+        .select("settings")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (data?.settings) {
+        setSettings({ ...defaultSettings, ...(data.settings as typeof defaultSettings) });
+      }
+    } catch (err) {
+      console.error("Error loading settings:", err);
+    } finally {
+      setLoadingSettings(false);
     }
-  });
+  };
 
   const handleSave = async () => {
+    if (!user) return;
     setLoading(true);
-    // Save settings to localStorage or database
-    localStorage.setItem('userSettings', JSON.stringify(settings));
-    
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const { error } = await supabase
+        .from("user_settings")
+        .upsert(
+          { user_id: user.id, settings: settings as any },
+          { onConflict: "user_id" }
+        );
+
+      if (error) throw error;
+
       toast({
         title: "Sukces",
         description: "Ustawienia zostały zapisane"
       });
-    }, 500);
+    } catch (err: any) {
+      toast({
+        title: "Błąd",
+        description: err.message || "Nie udało się zapisać ustawień",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/");
   };
+
+  if (loadingSettings) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4 md:p-8">
@@ -119,121 +170,51 @@ const Settings = () => {
 
                 <TabsContent value="notifications" className="space-y-6">
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <p className="font-medium">Powiadomienia Email</p>
-                        <p className="text-sm text-muted-foreground">Otrzymuj ważne aktualizacje na email</p>
+                    {[
+                      { key: "email" as const, label: "Powiadomienia Email", desc: "Otrzymuj ważne aktualizacje na email" },
+                      { key: "push" as const, label: "Powiadomienia Push", desc: "Powiadomienia w przeglądarce" },
+                      { key: "releases" as const, label: "Nowe Wydania", desc: "Powiadomienia o statusie wydań muzycznych" },
+                      { key: "analytics" as const, label: "Raporty Analityczne", desc: "Tygodniowe podsumowania statystyk" },
+                      { key: "marketing" as const, label: "Marketing", desc: "Informacje o promocjach i nowościach" },
+                    ].map((item) => (
+                      <div key={item.key} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <p className="font-medium">{item.label}</p>
+                          <p className="text-sm text-muted-foreground">{item.desc}</p>
+                        </div>
+                        <Switch
+                          checked={settings.notifications[item.key]}
+                          onCheckedChange={(checked) => setSettings({
+                            ...settings,
+                            notifications: { ...settings.notifications, [item.key]: checked }
+                          })}
+                        />
                       </div>
-                      <Switch
-                        checked={settings.notifications.email}
-                        onCheckedChange={(checked) => setSettings({
-                          ...settings,
-                          notifications: { ...settings.notifications, email: checked }
-                        })}
-                      />
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <p className="font-medium">Powiadomienia Push</p>
-                        <p className="text-sm text-muted-foreground">Powiadomienia w przeglądarce</p>
-                      </div>
-                      <Switch
-                        checked={settings.notifications.push}
-                        onCheckedChange={(checked) => setSettings({
-                          ...settings,
-                          notifications: { ...settings.notifications, push: checked }
-                        })}
-                      />
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <p className="font-medium">Nowe Wydania</p>
-                        <p className="text-sm text-muted-foreground">Powiadomienia o statusie wydań muzycznych</p>
-                      </div>
-                      <Switch
-                        checked={settings.notifications.releases}
-                        onCheckedChange={(checked) => setSettings({
-                          ...settings,
-                          notifications: { ...settings.notifications, releases: checked }
-                        })}
-                      />
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <p className="font-medium">Raporty Analityczne</p>
-                        <p className="text-sm text-muted-foreground">Tygodniowe podsumowania statystyk</p>
-                      </div>
-                      <Switch
-                        checked={settings.notifications.analytics}
-                        onCheckedChange={(checked) => setSettings({
-                          ...settings,
-                          notifications: { ...settings.notifications, analytics: checked }
-                        })}
-                      />
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <p className="font-medium">Marketing</p>
-                        <p className="text-sm text-muted-foreground">Informacje o promocjach i nowościach</p>
-                      </div>
-                      <Switch
-                        checked={settings.notifications.marketing}
-                        onCheckedChange={(checked) => setSettings({
-                          ...settings,
-                          notifications: { ...settings.notifications, marketing: checked }
-                        })}
-                      />
-                    </div>
+                    ))}
                   </div>
                 </TabsContent>
 
                 <TabsContent value="privacy" className="space-y-6">
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <p className="font-medium">Profil Publiczny</p>
-                        <p className="text-sm text-muted-foreground">Czy inni użytkownicy mogą zobaczyć Twój profil</p>
+                    {[
+                      { key: "profilePublic" as const, label: "Profil Publiczny", desc: "Czy inni użytkownicy mogą zobaczyć Twój profil" },
+                      { key: "showStats" as const, label: "Pokazuj Statystyki", desc: "Wyświetlaj statystyki na publicznym profilu" },
+                      { key: "allowMessages" as const, label: "Zezwalaj na Wiadomości", desc: "Inni użytkownicy mogą wysyłać Ci wiadomości" },
+                    ].map((item) => (
+                      <div key={item.key} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <p className="font-medium">{item.label}</p>
+                          <p className="text-sm text-muted-foreground">{item.desc}</p>
+                        </div>
+                        <Switch
+                          checked={settings.privacy[item.key]}
+                          onCheckedChange={(checked) => setSettings({
+                            ...settings,
+                            privacy: { ...settings.privacy, [item.key]: checked }
+                          })}
+                        />
                       </div>
-                      <Switch
-                        checked={settings.privacy.profilePublic}
-                        onCheckedChange={(checked) => setSettings({
-                          ...settings,
-                          privacy: { ...settings.privacy, profilePublic: checked }
-                        })}
-                      />
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <p className="font-medium">Pokazuj Statystyki</p>
-                        <p className="text-sm text-muted-foreground">Wyświetlaj statystyki na publicznym profilu</p>
-                      </div>
-                      <Switch
-                        checked={settings.privacy.showStats}
-                        onCheckedChange={(checked) => setSettings({
-                          ...settings,
-                          privacy: { ...settings.privacy, showStats: checked }
-                        })}
-                      />
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-4 border rounded-lg">
-                      <div>
-                        <p className="font-medium">Zezwalaj na Wiadomości</p>
-                        <p className="text-sm text-muted-foreground">Inni użytkownicy mogą wysyłać Ci wiadomości</p>
-                      </div>
-                      <Switch
-                        checked={settings.privacy.allowMessages}
-                        onCheckedChange={(checked) => setSettings({
-                          ...settings,
-                          privacy: { ...settings.privacy, allowMessages: checked }
-                        })}
-                      />
-                    </div>
+                    ))}
                   </div>
                 </TabsContent>
 
@@ -331,8 +312,17 @@ const Settings = () => {
 
               <div className="flex justify-end mt-6 pt-6 border-t">
                 <Button onClick={handleSave} disabled={loading}>
-                  <Save className="w-4 h-4 mr-2" />
-                  {loading ? "Zapisywanie..." : "Zapisz Ustawienia"}
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Zapisywanie...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4 mr-2" />
+                      Zapisz Ustawienia
+                    </>
+                  )}
                 </Button>
               </div>
             </CardContent>

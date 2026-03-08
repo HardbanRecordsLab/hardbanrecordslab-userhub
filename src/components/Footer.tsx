@@ -109,7 +109,7 @@ export function Footer() {
         <div className="pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © 2025 HardbanRecords Lab. Wszystkie prawa zastrzeżone.
+              © {new Date().getFullYear()} HardbanRecords Lab. Wszystkie prawa zastrzeżone.
             </p>
             <div className="flex gap-6">
               <Link to="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">

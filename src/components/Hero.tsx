@@ -4,7 +4,6 @@ import { ArrowRight, Play, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import heroBackground from "@/assets/hero-background.jpg";
-import logoColor from "@/assets/logo-color.png";
 import { DemoModal } from "./DemoModal";
 
 export function Hero() {

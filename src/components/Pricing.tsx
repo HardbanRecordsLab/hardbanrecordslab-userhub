@@ -74,7 +74,7 @@ export function Pricing() {
                 <p className="text-muted-foreground mb-4">{plan.description}</p>
                 
                 <div className="mb-6">
-                  <span className="text-4xl font-bold">${plan.price}</span>
+                  <span className="text-4xl font-bold">{plan.price} zł</span>
                   <span className="text-muted-foreground">/miesiąc</span>
                 </div>
 

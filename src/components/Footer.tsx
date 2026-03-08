@@ -12,9 +12,9 @@ const footerLinks = {
   ],
   Firma: [
     { label: "O Nas", href: "#about", isAnchor: true },
-    { label: "Kariera", href: "mailto:kariera@hardbanrecords.com", isAnchor: false },
+    { label: "Kariera", href: "mailto:kariera@hardbanrecordslab.online", isAnchor: false },
     { label: "Blog", href: "#contact", isAnchor: true },
-    { label: "Prasa", href: "mailto:prasa@hardbanrecords.com", isAnchor: false },
+    { label: "Prasa", href: "mailto:prasa@hardbanrecordslab.online", isAnchor: false },
     { label: "Partnerzy", href: "#contact", isAnchor: true },
   ],
   Wsparcie: [

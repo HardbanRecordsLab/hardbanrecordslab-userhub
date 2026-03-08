@@ -202,10 +202,20 @@
     border-color: hsl(38 65% 50% / 0.1);
   }
 
+  .light .glass {
+    background: hsl(40 20% 98% / 0.7);
+    border-color: hsl(222 15% 85%);
+  }
+
   .glass-dark {
     @apply backdrop-blur-xl border;
     background: hsl(222 30% 8% / 0.8);
     border-color: hsl(222 20% 20% / 0.5);
+  }
+
+  .light .glass-dark {
+    background: hsl(40 20% 97% / 0.9);
+    border-color: hsl(222 15% 88%);
   }
 
   .glass-card {
@@ -215,10 +225,20 @@
     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
+  .light .glass-card {
+    background: hsl(40 15% 98% / 0.8);
+    border-color: hsl(222 15% 88%);
+  }
+
   .glass-card:hover {
     border-color: hsl(38 65% 50% / 0.2);
     box-shadow: 0 8px 32px hsl(222 30% 3% / 0.6), 0 0 40px hsl(38 65% 50% / 0.08);
     transform: translateY(-2px);
+  }
+
+  .light .glass-card:hover {
+    border-color: hsl(38 65% 45% / 0.3);
+    box-shadow: 0 8px 32px hsl(222 30% 80% / 0.3);
   }
 
   /* Glow effects */

@@ -35,7 +35,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import logoColor from "@/assets/logo-color.png";
 import { NotificationCenter } from "@/components/NotificationCenter";
-
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { useSEO } from "@/hooks/useSEO";
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();

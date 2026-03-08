@@ -43,7 +43,7 @@ export function Hero() {
             transition={{ delay: 0.1, duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
             className="mb-8"
           >
-            <img src={logoColor} alt="HardbanRecords Lab" className="h-24 md:h-32 mx-auto drop-shadow-2xl" style={{ filter: 'drop-shadow(0 0 30px hsl(38 65% 50% / 0.3))' }} />
+            <img src={logoColor} alt="HardbanRecords Lab" className="h-24 md:h-32 w-auto max-w-[280px] mx-auto drop-shadow-2xl object-contain" style={{ filter: 'drop-shadow(0 0 30px hsl(38 65% 50% / 0.3))' }} />
           </motion.div>
 
           {/* Badge */}

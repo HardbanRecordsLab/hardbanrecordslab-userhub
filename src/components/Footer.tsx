@@ -21,7 +21,7 @@ const footerLinks = {
     { label: "Centrum Pomocy", href: "/faq", isAnchor: false },
     { label: "Dokumentacja", href: "/faq", isAnchor: false },
     { label: "Status", href: "#contact", isAnchor: true },
-    { label: "Kontakt", href: "mailto:kontakt@hardbanrecords.com", isAnchor: false },
+    { label: "Kontakt", href: "mailto:contact@hardbanrecordslab.online", isAnchor: false },
     { label: "FAQ", href: "/faq", isAnchor: false },
   ],
   Prawne: [

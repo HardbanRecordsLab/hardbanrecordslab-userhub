@@ -35,10 +35,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import logoColor from "@/assets/logo-color.png";
 import { NotificationCenter } from "@/components/NotificationCenter";
-
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { useSEO } from "@/hooks/useSEO";
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  useSEO({ title: "Panel Główny", description: "Zarządzaj swoją kreatywną karierą z jednego miejsca" });
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -193,7 +195,8 @@ export default function Dashboard() {
             <LayoutDashboard className="h-5 w-5 text-primary" />
             <h1 className="text-lg font-semibold" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Panel Główny</h1>
           </div>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
             <NotificationCenter />
           </div>
         </header>

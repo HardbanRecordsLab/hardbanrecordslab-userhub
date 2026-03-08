@@ -1,34 +1,67 @@
 import { motion } from "framer-motion";
 import CountUp from "react-countup";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-const stats = [
-  {
-    value: 10000,
-    suffix: "+",
-    label: "Aktywnych Twórców",
-    description: "Artyści, autorzy i kreatywni przedsiębiorcy",
-  },
-  {
-    value: 200,
-    suffix: "+",
-    label: "Platform Dystrybucji",
-    description: "Spotify, Apple Music, Amazon i więcej",
-  },
-  {
-    value: 1000000,
-    suffix: "+",
-    label: "Wydanych Utworów",
-    description: "Muzyka, e-booki, audiobooki",
-  },
-  {
-    value: 98,
-    suffix: "%",
-    label: "Satysfakcji Klientów",
-    description: "Na podstawie ankiet użytkowników",
-  },
-];
+interface StatsData {
+  artists: number;
+  platforms: number;
+  releases: number;
+  satisfaction: number;
+}
 
 export function Stats() {
+  const [data, setData] = useState<StatsData>({
+    artists: 0,
+    platforms: 38,
+    releases: 0,
+    satisfaction: 98,
+  });
+
+  useEffect(() => {
+    const loadStats = async () => {
+      const [profilesRes, releasesRes] = await Promise.all([
+        supabase.from("profiles").select("*", { count: "exact", head: true }),
+        supabase.from("music_releases").select("*", { count: "exact", head: true }).eq("status", "published"),
+      ]);
+
+      setData({
+        artists: profilesRes.count || 0,
+        platforms: 38,
+        releases: releasesRes.count || 0,
+        satisfaction: 98,
+      });
+    };
+    loadStats();
+  }, []);
+
+  const stats = [
+    {
+      value: data.artists,
+      suffix: "+",
+      label: "Zarejestrowanych Twórców",
+      description: "Artyści, autorzy i kreatywni przedsiębiorcy",
+    },
+    {
+      value: data.platforms,
+      suffix: "+",
+      label: "Platform Dystrybucji",
+      description: "Spotify, Apple Music, Amazon i więcej",
+    },
+    {
+      value: data.releases,
+      suffix: "",
+      label: "Opublikowanych Wydań",
+      description: "Muzyka dystrybuowana przez HRL",
+    },
+    {
+      value: data.satisfaction,
+      suffix: "%",
+      label: "Satysfakcji Użytkowników",
+      description: "Na podstawie ankiet beta-testerów",
+    },
+  ];
+
   return (
     <section className="py-24 relative bg-gradient-subtle">
       <div className="container mx-auto px-4">
@@ -43,7 +76,7 @@ export function Stats() {
             Liczby Mówią <span className="gradient-text">Same za Siebie</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Dołącz do tysięcy twórców, którzy już zaufali HardbanRecords Lab
+            Dołącz do twórców, którzy już zaufali HardbanRecords Lab
           </p>
         </motion.div>
 

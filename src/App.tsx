@@ -7,7 +7,9 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
-import { lazy, Suspense, useEffect } from "react";
+import { CommandPalette } from "@/components/CommandPalette";
+import { ThemeProvider } from "next-themes";
+import { lazy, Suspense } from "react";
 import { PageLoader } from "@/components/PageLoader";
 import { setupGlobalErrorHandlers } from "@/lib/errorTracking";
 import { queryClientConfig } from "@/hooks/useQueryCache";
@@ -52,12 +54,14 @@ setupGlobalErrorHandlers();
 
 const App = () => (
   <ErrorBoundary>
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <OfflineIndicator />
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <CommandPalette />
           <AuthProvider>
           <Routes>
             <Route path="/" element={<Index />} />
@@ -235,6 +239,7 @@ const App = () => (
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
+    </ThemeProvider>
   </ErrorBoundary>
 );
 

@@ -40,6 +40,7 @@ import { useSEO } from "@/hooks/useSEO";
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  useSEO({ title: "Panel Główny", description: "Zarządzaj swoją kreatywną karierą z jednego miejsca" });
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);

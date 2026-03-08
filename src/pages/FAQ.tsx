@@ -202,7 +202,7 @@ const FAQ = () => {
                 <p className="text-muted-foreground mb-4">
                   Skontaktuj się z naszym zespołem wsparcia
                 </p>
-                <Button onClick={() => window.location.href = "mailto:kontakt@hardbanrecords.com"}>
+                <Button onClick={() => window.location.href = "mailto:contact@hardbanrecordslab.online"}>
                   Napisz do nas
                 </Button>
               </CardContent>

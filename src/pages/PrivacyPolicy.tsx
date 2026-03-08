@@ -113,9 +113,9 @@ const PrivacyPolicy = () => {
 
                 <h2>9. Kontakt</h2>
                 <p>
-                  W sprawach związanych z prywatnością możesz skontaktować się z nami:<br />
-                  Email: privacy@hardbanrecords.com<br />
-                  Adres: ul. Przykładowa 123, 00-001 Warszawa
+                   W sprawach związanych z prywatnością możesz skontaktować się z nami:<br />
+                   Email: contact@hardbanrecordslab.online<br />
+                   Strona: hardbanrecordslab.online
                 </p>
 
                 <h2>10. Zmiany w polityce</h2>

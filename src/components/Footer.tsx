@@ -12,16 +12,16 @@ const footerLinks = {
   ],
   Firma: [
     { label: "O Nas", href: "#about", isAnchor: true },
-    { label: "Kariera", href: "mailto:kariera@hardbanrecords.com", isAnchor: false },
+    { label: "Kariera", href: "mailto:kariera@hardbanrecordslab.online", isAnchor: false },
     { label: "Blog", href: "#contact", isAnchor: true },
-    { label: "Prasa", href: "mailto:prasa@hardbanrecords.com", isAnchor: false },
+    { label: "Prasa", href: "mailto:prasa@hardbanrecordslab.online", isAnchor: false },
     { label: "Partnerzy", href: "#contact", isAnchor: true },
   ],
   Wsparcie: [
     { label: "Centrum Pomocy", href: "/faq", isAnchor: false },
     { label: "Dokumentacja", href: "/faq", isAnchor: false },
     { label: "Status", href: "#contact", isAnchor: true },
-    { label: "Kontakt", href: "mailto:kontakt@hardbanrecords.com", isAnchor: false },
+    { label: "Kontakt", href: "mailto:contact@hardbanrecordslab.online", isAnchor: false },
     { label: "FAQ", href: "/faq", isAnchor: false },
   ],
   Prawne: [
@@ -34,11 +34,11 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com/hardbanrecords", label: "Facebook" },
-  { icon: Twitter, href: "https://twitter.com/hardbanrecords", label: "Twitter" },
-  { icon: Instagram, href: "https://instagram.com/hardbanrecords", label: "Instagram" },
-  { icon: Linkedin, href: "https://linkedin.com/company/hardbanrecords", label: "LinkedIn" },
-  { icon: Youtube, href: "https://youtube.com/@hardbanrecords", label: "YouTube" },
+  { icon: Facebook, href: "https://facebook.com/hardbanrecordslab", label: "Facebook" },
+  { icon: Twitter, href: "https://twitter.com/hardbanrecordslab", label: "Twitter" },
+  { icon: Instagram, href: "https://instagram.com/hardbanrecordslab", label: "Instagram" },
+  { icon: Linkedin, href: "https://linkedin.com/company/hardbanrecordslab", label: "LinkedIn" },
+  { icon: Youtube, href: "https://youtube.com/@hardbanrecordslab", label: "YouTube" },
 ];
 
 export function Footer() {

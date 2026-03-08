@@ -107,7 +107,7 @@ export default function PitchDeck() {
           <motion.div initial="hidden" animate="visible" variants={fadeUp} custom={4}
             className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="gradient" size="lg" className="text-base px-8"
-              onClick={() => window.location.href = "mailto:investors@hardbanrecords.com"}>
+              onClick={() => window.location.href = "mailto:contact@hardbanrecordslab.online"}>
               <Mail className="w-5 h-5 mr-2" /> Kontakt z Founderem
             </Button>
             <Button variant="outline" size="lg" className="text-base px-8"

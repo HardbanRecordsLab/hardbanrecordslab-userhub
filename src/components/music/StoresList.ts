@@ -1,4 +1,4 @@
-// RouteNote partner stores and streaming platforms
+// HardbanRecords Lab partner stores and streaming platforms
 export interface MusicStore {
   id: string;
   name: string;

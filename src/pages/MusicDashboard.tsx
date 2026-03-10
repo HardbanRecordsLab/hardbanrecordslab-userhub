@@ -96,7 +96,7 @@ export default function MusicDashboard() {
                 Dystrybucja Muzyki
               </h1>
               <p className="text-muted-foreground">
-                Publikuj muzykę na 38+ platformach streamingowych — proces wzorowany na RouteNote
+                Publikuj muzykę na 38+ platformach streamingowych przez HardbanRecords Lab
               </p>
             </div>
             {!showWizard && (

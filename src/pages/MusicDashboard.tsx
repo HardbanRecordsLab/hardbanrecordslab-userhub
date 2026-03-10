@@ -285,8 +285,8 @@ export default function MusicDashboard() {
                 <Disc3 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-2">Zacznij dystrybucję muzyki</h3>
                 <p className="text-muted-foreground mb-2 max-w-md mx-auto">
-                  Stwórz wydanie w 4 krokach: szczegóły albumu, audio, okładka, wybór sklepów — 
-                  dokładnie jak w RouteNote, ale pod marką HardbanRecords Lab.
+                  Stwórz wydanie w 4 krokach: szczegóły albumu, audio, okładka, wybór sklepów.
+                  Kompletny proces dystrybucji pod marką HardbanRecords Lab.
                 </p>
                 <p className="text-xs text-muted-foreground mb-6">
                   Free: 85% tantiem • 38+ platform • Nielimitowane wydania

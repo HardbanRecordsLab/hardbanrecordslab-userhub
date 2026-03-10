@@ -12,7 +12,7 @@ const modules = [
     subtitle: "Dla Artystów i Wytwórni",
     description: "Kompletna dystrybucja muzyki z automatycznym zarządzaniem metadanych, kodami ISRC/UPC i podziałem tantiem.",
     features: [
-      "38+ platform streamingowych (RouteNote)",
+      "38+ platform streamingowych",
       "Automatyczne kody ISRC",
       "Zarządzanie prawami",
       "Split sheets",

@@ -1,54 +1,47 @@
-import { useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import React, { createContext, useContext, useEffect } from "react";
 import { useAuthStore } from "@/store/authStore";
-import { createContext, useContext } from "react";
 
 interface AuthContextType {
-  session: any;
+  token: string | null;
   user: any;
   loading: boolean;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({ 
-  session: null, 
+  token: null, 
   user: null, 
-  loading: true 
+  loading: true,
+  logout: () => {}
 });
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within AuthProvider");
+    throw new Error("useAuth must be used within HRLAuthProvider");
   }
   return context;
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { session, user, loading, setSession, setLoading } = useAuthStore();
+  const { token, user, loading, checkAuth, logout } = useAuthStore();
 
   useEffect(() => {
-    // Check for existing session on mount
-    const initAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setLoading(false);
-    };
+    // KROK 3: Inicjalizacja sesji HRL Unified
+    checkAuth();
 
-    initAuth();
+    // Możemy tu dodać pooling dla kredytów (odświeżanie co minutę)
+    const interval = setInterval(() => {
+        if (token && user?.email) {
+            checkAuth();
+        }
+    }, 60000);
 
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-        setLoading(false);
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, [setSession, setLoading]);
+    return () => clearInterval(interval);
+  }, [token, user?.email]);
 
   return (
-    <AuthContext.Provider value={{ session, user, loading }}>
+    <AuthContext.Provider value={{ token, user, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );

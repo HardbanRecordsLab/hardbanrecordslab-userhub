@@ -3,17 +3,19 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { session, loading } = useAuth();
+  const { token, loading } = useAuth();
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <span className="ml-3 text-sm font-medium text-muted-foreground animate-pulse">Initializing HRL Unified...</span>
       </div>
     );
   }
 
-  if (!session) {
+  // Jeśli brak tokena SSO - przekieruj do strony logowania HRL / WordPress
+  if (!token) {
     return <Navigate to="/auth" replace />;
   }
 

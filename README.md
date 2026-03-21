@@ -1,108 +1,51 @@
-# Welcome to your Lovable project
+# 🛡️ HRL User Hub
 
-## Project info
+Główny portal ekosystemu **HardbanRecords Lab** — kompleksowa platforma SaaS dla niezależnych twórców, artystów i wytwórni.
 
-**URL**: https://lovable.dev/projects/d1d4f173-c5f5-43be-9003-1722ad6e610e
+## 🚀 O projekcie
 
-## How can I edit this code?
+HRL User Hub to centralne miejsce zarządzania karierą cyfrową. Platforma integruje zaawansowane narzędzia AI z modułami dystrybucji, marketingu i analityki, dając twórcom pełną kontrolę nad ich własnością intelektualną.
 
-There are several ways of editing your application.
+### Kluczowe moduły:
+- **Muzyka**: Dystrybucja na 38+ platform streamingowych, zarządzanie prawami i split sheets.
+- **Publikacje**: Wydawanie e-booków i audiobooków (z generatorem AI) na globalnych rynkach.
+- **Marketing**: Strategie AI, smart links, automatyzacja PR i planowanie social media.
+- **AI Studio**: Profesjonalne narzędzia do generowania treści, grafik i masteringu audio.
+- **Prometheus**: Zaawansowany ekosystem automatyzacji i dystrybucji treści.
 
-**Use Lovable**
+## 🛠️ Technologia
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/d1d4f173-c5f5-43be-9003-1722ad6e610e) and start prompting.
+- **Frontend**: React 18, Vite, TypeScript
+- **UI**: Tailwind CSS, shadcn/ui, Framer Motion
+- **Backend**: Supabase (Baza danych, Auth, Edge Functions)
+- **AI Engine**: Gemini 2.5 Flash
+- **PWA**: Pełne wsparcie offline i instalacja jako aplikacja.
 
-Changes made via Lovable will be committed automatically to this repo.
+## 📦 Instalacja i uruchomienie
 
-**Use your preferred IDE**
+1. Sklonuj repozytorium.
+2. Zainstaluj zależności:
+   ```bash
+   npm install
+   ```
+3. Uruchom serwer deweloperski:
+   ```bash
+   npm run dev
+   ```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🌐 Deployment
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Aplikacja jest zoptymalizowana pod wdrożenie na **Vercel** (`vercel.json`) lub **Netlify** (`netlify.toml`).
 
-Follow these steps:
+### Oficjalne adresy:
+- **Frontend (Vercel)**: [app-user-hub.hardbanrecordslab.online](https://app-user-hub.hardbanrecordslab.online)
+- **Backend (VPS)**: `user-hub.hardbanrecordslab.online`
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Zmienne środowiskowe:
+Wymagane do poprawnego działania integracji z Supabase:
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+- `VITE_USER_HUB_API` (opcjonalnie, domyślnie: `https://user-hub.hardbanrecordslab.online`)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-### Option 1: Lovable (Recommended)
-Simply open [Lovable](https://lovable.dev/projects/d1d4f173-c5f5-43be-9003-1722ad6e610e) and click on Share -> Publish.
-
-### Option 2: Vercel
-1. Export to GitHub via Lovable Settings
-2. Connect your GitHub repo to [Vercel](https://vercel.com)
-3. Add environment variables:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_PUBLISHABLE_KEY`
-4. Deploy automatically on push
-
-### Option 3: Netlify
-1. Export to GitHub via Lovable Settings
-2. Connect your GitHub repo to [Netlify](https://netlify.com)
-3. Add environment variables in Site Settings > Environment
-4. Deploy automatically on push
-
-### Environment Variables Required
-```
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
-```
-
-## E2E Testing
-
-```bash
-# Install Playwright
-npm install -D @playwright/test
-npx playwright install
-
-# Run tests
-npx playwright test
-
-# Run tests with UI
-npx playwright test --ui
-```
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+---
+© 2026 **HardbanRecords Lab** · Wszystkie prawa zastrzeżone.

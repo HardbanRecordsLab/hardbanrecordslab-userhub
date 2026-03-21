@@ -167,8 +167,8 @@ export default function AuthPage() {
         <Card className="glass-dark border-white/10">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 rounded-xl bg-gradient-primary p-3">
-                <Music2 className="w-full h-full text-white" />
+              <div className="w-24 h-24 flex items-center justify-center overflow-hidden rounded-xl bg-white/5 p-2 border border-white/10">
+                <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
               </div>
             </div>
             <CardTitle className="text-2xl font-bold">HardbanRecords Lab</CardTitle>

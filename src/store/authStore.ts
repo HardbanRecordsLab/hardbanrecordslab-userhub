@@ -1,47 +1,78 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { supabase } from '@/integrations/supabase/client';
-import { Session, User } from '@supabase/supabase-js';
+import { hrlServices } from '@/lib/apiClient';
+
+export interface HRLUser {
+  email: string;
+  credits: number;
+  tier: string;
+  is_premium: boolean;
+  pmp_level: string;
+  trial_status: 'active' | 'expired' | 'none';
+  all_apps_access: boolean;
+}
 
 interface AuthState {
-  session: Session | null;
-  user: User | null;
+  token: string | null;
+  user: HRLUser | null;
   loading: boolean;
-  setSession: (session: Session | null) => void;
-  setUser: (user: User | null) => void;
+  setToken: (token: string | null) => void;
+  setUser: (user: HRLUser | null) => void;
   setLoading: (loading: boolean) => void;
   checkAuth: () => Promise<void>;
-  signOut: () => Promise<void>;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
-      session: null,
+    (set, get) => ({
+      token: null,
       user: null,
       loading: true,
-      setSession: (session) => set({ session, user: session?.user ?? null }),
+      setToken: (token) => {
+        set({ token });
+        if (token) {
+          localStorage.setItem('hrl_sso_token', token);
+        } else {
+          localStorage.removeItem('hrl_sso_token');
+        }
+      },
       setUser: (user) => set({ user }),
       setLoading: (loading) => set({ loading }),
       checkAuth: async () => {
-        set({ loading: true });
+        const token = localStorage.getItem('hrl_sso_token');
+        if (!token) {
+          set({ loading: false, user: null, token: null });
+          return;
+        }
+
+        set({ loading: true, token });
         try {
-          const { data: { session } } = await supabase.auth.getSession();
-          set({ session, user: session?.user ?? null, loading: false });
+          // W docelowej wersji wyciągamy email z zdekodowanego JWT
+          // Na potrzeby MVP/Testów używamy zapisanego maila lub mocka
+          const email = localStorage.getItem('hrl_user_email') || 'contact@hardbanrecordslab.online';
+          
+          const response = await hrlServices.getProfile(email);
+          if (response.data) {
+            set({ user: response.data, loading: false });
+          }
         } catch (error) {
-          console.error('Error checking auth:', error);
-          set({ loading: false });
+          console.error('HRL Unified Auth Error:', error);
+          set({ loading: false, user: null, token: null });
+          localStorage.removeItem('hrl_sso_token');
         }
       },
-      signOut: async () => {
-        await supabase.auth.signOut();
-        set({ session: null, user: null });
+      logout: () => {
+        localStorage.removeItem('hrl_sso_token');
+        localStorage.removeItem('hrl_user_email');
+        set({ token: null, user: null });
+        window.location.href = 'https://hardbanrecordslab.online'; // Powrót do głównego portalu
       },
     }),
     {
-      name: 'auth-storage',
+      name: 'hrl-unified-auth-storage',
       partialize: (state) => ({ 
-        session: state.session, 
+        token: state.token, 
         user: state.user 
       }),
     }

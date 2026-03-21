@@ -1,51 +1,58 @@
 import axios from 'axios';
-import { supabase } from '@/integrations/supabase/client';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+// HRL Unified Platform - Centralne URL-e dla Backendów
+const USER_HUB_URL = import.meta.env.VITE_USER_HUB_API || 'https://user-hub.hardbanrecordslab.online';
+const ACCESS_MANAGER_URL = import.meta.env.VITE_ACCESS_MANAGER_API || 'https://hrl-access.hardbanrecordslab.online';
 
 /**
- * Centalny klient API do komunikacji z backendem na VPS.
- * Automatycznie dołącza token JWT z Supabase do każdego zapytania.
+ * Centalny klient API HRL Unified Experience.
+ * Automatycznie dołącza token JWT (z WordPress SSO) do każdego zapytania.
  */
 export const apiClient = axios.create({
-  baseURL: BACKEND_URL,
+  baseURL: USER_HUB_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Interceptor do dodawania tokenu autoryzacji
-apiClient.interceptors.request.use(async (config) => {
-  const { data: { session } } = await supabase.auth.getSession();
-  
-  if (session?.access_token) {
-    config.headers.Authorization = `Bearer ${session.access_token}`;
-  }
-  
-  return config;
-}, (error) => {
-  return Promise.reject(error);
+// Klient dedykowany do Access Managera (Kredyty, Profile)
+export const accessApi = axios.create({
+  baseURL: ACCESS_MANAGER_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-// Typy dla odpowiedzi AI
-export interface AIResponse {
-  content: string;
-  usage?: {
-    prompt_tokens: number;
-    completion_tokens: number;
-    total_tokens: number;
-  };
-}
+/**
+ * Interceptor do autoryzacji SSO.
+ * W docelowej wersji pobiera token z ciasteczka lub localStorage ustawionego przez WP.
+ */
+const authInterceptor = (config: any) => {
+  const token = localStorage.getItem('hrl_sso_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+};
+
+apiClient.interceptors.request.use(authInterceptor);
+accessApi.interceptors.request.use(authInterceptor);
 
 /**
- * Funkcje pomocnicze dla konkretnych modułów
+ * PAKIET: HRL Unified Hub Services
  */
-export const aiApi = {
-  generateContent: (prompt: string, type: string) => 
-    apiClient.post<AIResponse>('/api/ai/generate', { prompt, type }),
+export const hrlServices = {
+  // Pobieranie profilu i kredytów (z portu 9107)
+  getProfile: (email: string) => 
+    accessApi.get(`/api/auth/profile`, { params: { email } }),
+
+  // Akcja wydawnicza (z portu 9101)
+  submitRelease: (releaseData: any) => 
+    apiClient.post('/api/publish/submit', releaseData),
     
-  generateStrategy: (artistId: string, goals: string[]) => 
-    apiClient.post<AIResponse>('/api/ai/strategy', { artistId, goals }),
+  // Zdrowie systemów
+  checkHealth: () => 
+    apiClient.get('/api/health'),
 };
 
 export default apiClient;
